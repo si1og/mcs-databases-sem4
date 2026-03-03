@@ -8,6 +8,8 @@
 \usetikzlibrary{positioning}
 
 % TODO: Воспроизводит -> поддерживает глифы (алфавит)
+% TODO: Увеличть поля
+% TODO: поменять фразу в «регитсрация»
 
 \tikzstyle{every entity} = [fill=white]
 \tikzstyle{every attribute} = [fill=white, node distance=10em, text width=6.5em, minimum width=6em]
@@ -94,11 +96,11 @@
 \node[attribute] (f5) [below of=fmt] {Поддержка веба} edge (fmt);
 
 % поддерживает
-\node[relationship] (obl) [below=12em of nach] {Воспроизводит}
+\node[relationship] (obl) [below=12em of nach] {Содержит}
     edge node[left] {1} (nach);
 
 % ПОДДЕРЖКА ЯЗЫКА
-\node[entity] (podder) [below=8em of obl] {Поддержка языка};
+\node[entity] (podder) [below=8em of obl] {Алфавит};
 \draw[link] (obl) -- node[left] {N} (podder);
 \node[derived attribute] (pl2) [above left of=podder] {Число начертаний в системе} edge (podder);
 \node[derived attribute] (pl3) [below left of=podder] {Число поддерж. гарнитур} edge (podder);
