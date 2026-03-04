@@ -1,5 +1,5 @@
 \documentclass[a3paper, landscape]{article}
-\usepackage[left=1cm, right=1cm, top=1cm, bottom=1cm]{geometry}
+\usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm]{geometry}
 \usepackage[T2A]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[russian]{babel}
@@ -19,7 +19,7 @@
 \begin{document}
 \begin{figure}[p]
 \centering
-\scalebox{0.85}{
+\scalebox{0.80}{
 \begin{tikzpicture}[node distance=6em, every edge/.style={link}]
 
 % ИЗДАТЕЛЬСТВО
@@ -122,7 +122,7 @@
 
 
 % ИСПОЛЬЗОВАНИЕ (entity)
-\node[entity] (isp) [below right=18em and 18em of nach] {Использование};
+\node[entity] (isp) [below right=18em and 18em of nach] {Установка};
 \node[attribute] (u1) [above of=isp] {Дата установки} edge (isp);
 \node[attribute] (u2) [below left of=isp] {Дата удаления} edge (isp);
 \node[attribute] (u3) [left of=isp] {Путь к файлу} edge (isp);
@@ -130,12 +130,12 @@
 \node[attribute] (u5) [below of=isp] {Дата посл. исп.} edge (isp);
 
 % Начертание -- фиксирует -- Использование
-\node[relationship] (r_fix) [below right=8em and 8em of nach] {Регистрируется};
+\node[relationship] (r_fix) [below right=8em and 8em of nach] {Участвует};
 \draw[link] (nach) -- node[above left] {1} (r_fix);
 \draw[link] (r_fix) -- node[above right] {N} (isp);
 
 % размещено на
-\node[relationship] (r_razm) [right=8em of isp] {Размещено}
+\node[relationship] (r_razm) [right=8em of isp] {Производится}
     edge node[above] {N} (isp);
 
 % РАБОЧАЯ СТАНЦИЯ
