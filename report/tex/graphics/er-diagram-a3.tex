@@ -40,13 +40,15 @@
 \node[attribute] (g1) [above left of=garn] {\key{Название}} edge (garn);
 \node[attribute] (g2) [above of=garn] {Год создания} edge (garn);
 \node[attribute] (g3) [above right of=garn] {Описание} edge (garn);
-\node[attribute] (g4) [below right of=garn] {Издательство} edge (garn);
-\node[attribute] (g5) [below left of=garn] {Лицензия} edge (garn);
-\node[attribute] (g6) [right=3em of g4] {Число начертаний} edge (garn);
+\node[attribute] (g4) [below right of=garn] {Число начертаний} edge (garn);
 
 % относится к
 \node[relationship] (r_otn) [right=8em of garn] {Классифицируется}
     edge node[above] {N} (garn);
+
+% распространяется под
+\node[relationship] (r_ras) [below left=12em of garn] {Распространяется}
+    edge node[above] {1} (garn);
 
 % КАТЕГОРИЯ
 \node[entity] (kat) [right=8em of r_otn] {Категория};
@@ -62,6 +64,7 @@
 % ЛИЦЕНЗИЯ
 \node[entity] (lic) [below=8em of r_vyd] {Лицензия};
 \draw[link] (r_vyd) -- node[left] {N} (lic);
+\draw[link] (r_ras) -- node[left] {N} (lic);
 \node[attribute] (l1) [above left of=lic] {\key{Тип}} edge (lic);
 \node[attribute] (l2) [left of=lic] {Срок действия} edge (lic);
 \node[attribute] (l3) [below left of=lic] {Макс. станций} edge (lic);
@@ -170,16 +173,17 @@
 
     \textbf{Текст чтения диаграммы:}
     \begin{enumerate}
-        \item Издательство выдаёт лицензию.
         \item Издательство выпускает гарнитуру.
-        \item Гарнитура включает начертание.
+        \item Издательство выдаёт лицензию.
         \item Гарнитура классифицируется по категории.
-        \item Начертание воспроизводит поддержку языка.
-        \item Поддержка языка охватывает язык.
-        \item Начертание хранится в формате.
-        \item Начертание регистрируется в используемых.
-        \item Используемое начертание размещается на рабочей станции.
+        \item Гарнитура включает начертание.
+        \item Начертание сожерит алфавит.
+        \item Алфавит охватывает язык.
+        \item Начертание участвует в установке.
+        \item Установка производится на рабочей станции.
         \item На рабочую станцию установлена операционная система.
+        \item Начертание хранится в формате.
+        \item Гарнитура распространяется по лицензии.
     \end{enumerate}
 };
 
