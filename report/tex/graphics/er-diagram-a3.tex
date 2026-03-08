@@ -1,5 +1,5 @@
 \documentclass[a3paper, landscape]{article}
-\usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm]{geometry}
+\usepackage[left=2cm, right=2cm, top=2cm, bottom=2cm]{geometry}
 \usepackage[T2A]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[russian]{babel}
@@ -7,10 +7,6 @@
 
 \input{../lib/tikz-er2.sty}
 \usetikzlibrary{positioning}
-
-% TODO: Воспроизводит -> поддерживает глифы (алфавит)
-% TODO: Увеличть поля
-% TODO: поменять фразу в «регитсрация»
 
 \tikzstyle{every entity} = [fill=white]
 \tikzstyle{every attribute} = [fill=white, node distance=10em, text width=6.5em, minimum width=6em]
@@ -156,7 +152,7 @@
     edge node[left] {N} (rab);
 
 % ОПЕРАЦИОННАЯ СИСТЕМА
-\node[entity] (os) [below=8em of r_ust] {ОС};
+\node[entity] (os) [below=4em of r_ust] {ОС};
 \draw[link] (r_ust) -- node[left] {1} (os);
 \node[attribute] (o1) [left of=os] {\key{Название}} edge (os);
 \node[attribute] (o2) [below left of=os] {Версия} edge (os);
