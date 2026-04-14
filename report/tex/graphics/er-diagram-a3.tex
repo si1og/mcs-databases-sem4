@@ -53,7 +53,7 @@
 \node[attribute] (k1) [above left of=kat] {\key{Название}} edge (kat);
 \node[attribute] (k2) [above of=kat] {Описание} edge (kat);
 \node[attribute] (k3) [above right of=kat] {Иконка} edge (kat);
-\node[attribute] (k4) [right of=kat] {Число шрифтов} edge (kat);
+\node[derived attribute] (k4) [right of=kat] {Число гарнитур} edge (kat);
 % выдаёт
 \node[relationship] (r_vyd) [below=8em of izd] {Выдаёт}
     edge node[left] {1} (izd);
@@ -78,7 +78,7 @@
 \node[attribute] (n1) [above right of=nach] {\key{Название}} edge (nach);
 \node[attribute] (n2) [below right=2em and 8em of nach] {Насыщенность} edge (nach);
 \node[attribute] (n3) [below left of=nach] {Наклон} edge (nach);
-\node[attribute] (n4) [left of=nach] {Формат файла} edge (nach);
+\node[attribute] (n4) [left of=nach] {Имя файла} edge (nach);
 \node[attribute] (n5) [above left of=nach] {Размер
 файла} edge (nach);
 
