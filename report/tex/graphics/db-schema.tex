@@ -1,0 +1,246 @@
+\documentclass[a3paper, landscape]{article}
+\usepackage[left=1cm, right=1cm, top=1cm, bottom=1cm]{geometry}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+\thispagestyle{empty}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning, calc, matrix}
+
+\tikzset{
+    tbl/.style={
+        matrix of nodes,
+        draw, thick,
+        inner sep=0pt,
+        column sep=0pt,
+        row sep=0pt,
+        nodes={
+            anchor=center,
+            font=\ttfamily\scriptsize,
+            inner xsep=4pt,
+            inner ysep=3pt,
+            minimum width=14em,
+            minimum height=1.6em,
+            draw, thin,
+            align=left,
+        },
+        row 1/.style={
+            nodes={
+                font=\bfseries\small,
+                minimum height=2em,
+                align=center,
+                fill=white,
+            },
+        },
+    },
+    ann/.style={font=\scriptsize},
+    lnk/.style={thick},
+    crd/.style={font=\scriptsize, fill=white, inner sep=1pt},
+}
+
+\begin{document}
+\begin{figure}[p]
+\centering
+\begin{tikzpicture}[node distance=3em]
+
+% === Ряд 1: Издательство — Гарнитура — Категория ===
+
+\matrix[tbl] (pub) at (0,0) {
+    Издательство \\
+    id\_Издательство \\
+    Название \\
+    Страна \\
+    Сайт \\
+    Год\_основания \\
+    Email \\
+};
+\node[ann, above=0.3em of pub] {--; --; --};
+
+\matrix[tbl] (ff) at (25em,0) {
+    Гарнитура \\
+    id\_Гарнитура \\
+    Название \\
+    Год\_создания \\
+    Описание \\
+    Число\_начертаний \\
+    id\_Издательство \\
+    id\_Категория \\
+};
+\node[ann, above=0.3em of ff] {--; --; --};
+
+\matrix[tbl] (cat) at (50em,0) {
+    Категория \\
+    id\_Категория \\
+    Название \\
+    Описание \\
+    Иконка \\
+    Число\_гарнитур \\
+};
+\node[ann, above=0.3em of cat] {--; --; --};
+
+% === Ряд 2: Лицензия — Начертание — Формат ===
+
+\matrix[tbl] (lic) at (0,-18em) {
+    Лицензия \\
+    id\_Лицензия \\
+    Тип \\
+    Срок\_действия \\
+    Макс\_число\_станций \\
+    Стоимость \\
+    Дата\_приобретения \\
+    id\_Издательство \\
+    id\_Гарнитура \\
+};
+\node[ann, above=0.3em of lic] {--; --; --};
+
+\matrix[tbl] (tf) at (25em,-18em) {
+    Начертание \\
+    id\_Начертание \\
+    Название \\
+    Насыщенность \\
+    Наклон \\
+    Размер\_файла \\
+    id\_Гарнитура \\
+    id\_Формат \\
+};
+\node[ann, above=0.3em of tf] {--; --; --};
+
+\matrix[tbl] (fmt) at (50em,-18em) {
+    Формат \\
+    id\_Формат \\
+    Название \\
+    Расширение \\
+    Год\_появления \\
+    Описание \\
+
+    Поддержка\_веба \\
+};
+\node[ann, above=0.3em of fmt] {--; --; --};
+
+% === Ряд 3: Язык — Алфавит — Установка — Раб. станция — ОС ===
+
+\matrix[tbl] (lang) at (0,-54em) {
+    Язык \\
+    id\_Язык \\
+    Название \\
+    Код\_ISO \\
+    Направление\_письма \\
+    Тип\_письменности \\
+};
+\node[ann, above=0.3em of lang] {--; --; --};
+
+\matrix[tbl] (alph) at (16em,-36em) {
+    Алфавит \\
+    id\_Алфавит \\
+    Число\_начерт\_в\_сист. \\
+    Число\_поддерж\_гарн. \\
+    Дата\_проверки \\
+    Статус \\
+    id\_Начертание \\
+    id\_Язык \\
+};
+\node[ann, above=0.3em of alph] {--; --; --};
+
+\matrix[tbl] (inst) at (40em,-36em) {
+    Установка \\
+    id\_Установка \\
+    Дата\_установки \\
+    Дата\_удаления \\
+    Путь\_к\_файлу \\
+    Статус \\
+    Дата\_последнего\_исп. \\
+    id\_Начертание \\
+    id\_Рабочая\_станция \\
+};
+\node[ann, above=0.3em of inst] {--; --; --};
+
+\matrix[tbl] (ws) at (64em,-36em) {
+    Рабочая станция \\
+    id\_Рабочая\_станция \\
+    Инвентарный\_номер \\
+    Процессор \\
+    Объём\_памяти \\
+    Тип\_накопителя \\
+    Графический\_адаптер \\
+    id\_ОС \\
+};
+\node[ann, above=0.3em of ws] {--; --; --};
+
+\matrix[tbl] (os) at (64em,-54em) {
+    ОС \\
+    id\_ОС \\
+    Название \\
+    Версия \\
+    Разрядность \\
+    Год\_выпуска \\
+};
+\node[ann, above=0.3em of os] {--; --; --};
+
+% ==================== СВЯЗИ ====================
+
+% --- Ряд 1: горизонтальные ---
+
+% Гарнитура.id_Издательство → Издательство.id_Издательство
+\draw[lnk] (ff-7-1.west) -- node[crd, above] {$\infty$} ++(-1.5em,0)
+    -- node[crd, above, pos=0.5] {} ([xshift=1.5em]pub-2-1.east)
+    -- node[crd, above] {1} (pub-2-1.east);
+
+% Гарнитура.id_Категория → Категория.id_Категория
+\draw[lnk] (ff-8-1.east) -- node[crd, above] {$\infty$} ++(1.5em,0)
+    -- ([xshift=-1.5em]cat-2-1.west)
+    -- node[crd, above] {1} (cat-2-1.west);
+
+% --- Ряд 1→2: вертикальные ---
+
+% Гарнитура.id_Гарнитура → Начертание.id_Гарнитура
+\draw[lnk] (ff-2-1.east) -- ++(2em,0) node[crd, above] {1}
+    |- node[crd, pos=0.75, above] {$\infty$} (tf-7-1.east);
+
+% Издательство.id_Издательство → Лицензия.id_Издательство
+\draw[lnk] (pub-2-1.west) -- ++(-1.5em,0) node[crd, above] {1}
+    |- node[crd, pos=0.75, above] {$\infty$} (lic-8-1.west);
+
+% Гарнитура.id_Гарнитура → Лицензия.id_Гарнитура
+\draw[lnk] (ff-2-1.west) -- ++(-3em,0) node[crd, above] {1}
+    |- node[crd, pos=0.75, above] {$\infty$} (lic-9-1.east);
+
+% --- Ряд 2: горизонтальные ---
+
+% Начертание.id_Формат → Формат.id_Формат
+\draw[lnk] (tf-8-1.east) -- node[crd, above] {$\infty$} ++(1.5em,0)
+    -- ([xshift=-1.5em]fmt-2-1.west)
+    -- node[crd, above] {1} (fmt-2-1.west);
+
+% --- Ряд 2→3: вертикальные ---
+
+% Начертание.id_Начертание → Алфавит.id_Начертание
+\draw[lnk] (tf-2-1.west) -- ++(-2em,0) node[crd, above] {1}
+    |- node[crd, pos=0.75, above] {$\infty$} (alph-7-1.west);
+
+% Начертание.id_Начертание → Установка.id_Начертание
+\draw[lnk] (tf-2-1.west) -- ++(-2em,0) node[crd, above] {1}
+    |- ++(0,-14em)
+    |- ([yshift=2em]inst-8-1.west)
+    -- node[crd, left] {$\infty$} (inst-8-1.west);
+
+% --- Ряд 3: горизонтальные ---
+
+% Алфавит.id_Язык → Язык.id_Язык
+\draw[lnk] (alph-8-1.west) -- node[crd, above] {$\infty$} ++(-1.5em,0)
+    -- ([xshift=1.5em]lang-2-1.east)
+    -- node[crd, above] {1} (lang-2-1.east);
+
+% Установка.id_Рабочая_станция → Рабочая_станция.id_Рабочая_станция
+\draw[lnk] (inst-9-1.east) -- node[crd, above] {$\infty$} ++(8em,0)
+    |- ([xshift=-1.5em]ws-2-1.west)
+    |- node[crd, above] {1} (ws-2-1.west);
+
+% Рабочая_станция.id_ОС → ОС.id_ОС
+\draw[lnk] (ws-8-1.east) -- ++(2em,0) node[crd, above] {$\infty$}
+    |- node[crd, left, pos=0.75] {1} (os-2-1.east);
+
+\end{tikzpicture}
+\caption{Схема базы данных на русском языке}
+\end{figure}
+\end{document}
