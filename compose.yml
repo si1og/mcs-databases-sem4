@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:17
+    container_name: typography_coursework_db
+    environment:
+      POSTGRES_DB: typography
+      POSTGRES_USER: ilyasemenov
+      POSTGRES_PASSWORD: type
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
