@@ -8,6 +8,7 @@
 \usepackage{tabularray}
 \usepackage{tikz}
 \usetikzlibrary{positioning, calc, tikzmark}
+\addtocounter{figure}{2}
 
 \newcommand{\tm}[2]{\tikzmarknode{#1}{#2}}
 
@@ -130,8 +131,8 @@
 \dbtable{alph}{20em,-36em}{
     \SetCell[c=2]{c} Алфавит & \\
     PK & \tm{alph_pk}{id\_Алфавит} \\
-       & Число\_начерт\_в\_сист. \\
-       & Число\_поддерж\_гарн. \\
+       & Число\_начерт\_в\_системе \\
+       & Число\_поддерж\_гарнитур \\
        & Дата\_проверки \\
        & Статус \\
     FK & \tm{alph_fk_tf}{id\_Начертание} \\

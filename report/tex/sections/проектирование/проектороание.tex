@@ -1,5 +1,5 @@
 \section{Проектирование}
-Схема базы данных прведена на рисунках 3 и 4 на русском и английском языках соответственно.
+Схема базы данных прведена на рисунках \ref{fig:db-schema-ru} и \ref{fig:db-schema-eng} на русском и английском языках соответственно.
 
 \subsection{Лингвистическое описание схемы базы данных}
 
@@ -412,3 +412,23 @@
 \end{table}
 
 }
+
+\clearpage
+\refstepcounter{figure}
+\label{fig:db-schema-ru}
+\includepdf[
+    pages=1,
+    landscape,
+    fitpaper,
+    pagecommand={\thispagestyle{plain}}
+]{tex/graphics/db-schema.pdf}
+
+\clearpage
+\refstepcounter{figure}
+\label{fig:db-schema-eng}
+\includepdf[
+    pages=1,
+    landscape,
+    fitpaper,
+    pagecommand={\thispagestyle{plain}}
+]{tex/graphics/db-schema-eng.pdf}
