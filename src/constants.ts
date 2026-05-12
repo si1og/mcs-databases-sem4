@@ -1,17 +1,47 @@
-export const COUNTS = {
-  os: 10,
-  publishers: 50,
+import { faker } from "@faker-js/faker";
+
+export const BASE_COUNTS = {
   categories: 12,
   formats: 5,
   languages: 40,
-  workstations: 200,
-  fontFamilies: 500,
-  typefacesPerFamily: { min: 3, max: 16 },
-  licensesPerFamily: 1,
-  alphabetsPerTypeface: { min: 25, max: 40 },
-  installationsPerWorkstation: { min: 800, max: 2000 },
-};
+} as const;
 
+export const COEFFICIENT_LIMITS = {
+  fontFamiliesPerCategory: { min: 450, max: 550 },
+  typefacesPerFamily: { min: 8, max: 10 },
+  alphabetsPerTypeface: { min: 6, max: 8 },
+} as const;
+
+export const COEFFICIENTS = {
+  fontFamiliesPerCategory: faker.number.int(
+    COEFFICIENT_LIMITS.fontFamiliesPerCategory,
+  ),
+
+  typefacesPerFamily: faker.number.int(COEFFICIENT_LIMITS.typefacesPerFamily),
+
+  alphabetsPerTypeface: faker.number.int(
+    COEFFICIENT_LIMITS.alphabetsPerTypeface,
+  ),
+} as const;
+
+export const COUNTS = {
+  categories: BASE_COUNTS.categories,
+  formats: BASE_COUNTS.formats,
+  languages: BASE_COUNTS.languages,
+
+  fontFamilies: BASE_COUNTS.categories * COEFFICIENTS.fontFamiliesPerCategory,
+
+  typefaces:
+    BASE_COUNTS.categories *
+    COEFFICIENTS.fontFamiliesPerCategory *
+    COEFFICIENTS.typefacesPerFamily,
+
+  alphabets:
+    BASE_COUNTS.categories *
+    COEFFICIENTS.fontFamiliesPerCategory *
+    COEFFICIENTS.typefacesPerFamily *
+    COEFFICIENTS.alphabetsPerTypeface,
+} as const;
 export const categoryNames = [
   "Serif",
   "Sans-serif",
@@ -80,31 +110,248 @@ export const formats = [
   },
 ];
 
-export const osNames = [
-  "Windows",
-  "macOS",
-  "Ubuntu Linux",
-  "Fedora Linux",
-  "Debian Linux",
-  "Arch Linux",
-  "RHEL",
-  "openSUSE",
-  "Mint Linux",
-  "Pop!_OS",
+export const languages = [
+  {
+    name: "English",
+    iso: "eng",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Russian",
+    iso: "rus",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "German",
+    iso: "deu",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "French",
+    iso: "fra",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Spanish",
+    iso: "spa",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Italian",
+    iso: "ita",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Portuguese",
+    iso: "por",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Dutch",
+    iso: "nld",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Polish",
+    iso: "pol",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Czech",
+    iso: "ces",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Slovak",
+    iso: "slk",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Ukrainian",
+    iso: "ukr",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Belarusian",
+    iso: "bel",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Serbian",
+    iso: "srp",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Croatian",
+    iso: "hrv",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Bulgarian",
+    iso: "bul",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Greek",
+    iso: "ell",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Turkish",
+    iso: "tur",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Finnish",
+    iso: "fin",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Swedish",
+    iso: "swe",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Norwegian",
+    iso: "nor",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Danish",
+    iso: "dan",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Icelandic",
+    iso: "isl",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Irish",
+    iso: "gle",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Welsh",
+    iso: "cym",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Arabic",
+    iso: "ara",
+    writingDirection: "right-to-left",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Hebrew",
+    iso: "heb",
+    writingDirection: "right-to-left",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Persian",
+    iso: "fas",
+    writingDirection: "right-to-left",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Urdu",
+    iso: "urd",
+    writingDirection: "right-to-left",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Hindi",
+    iso: "hin",
+    writingDirection: "left-to-right",
+    scriptType: "syllabic",
+  },
+  {
+    name: "Bengali",
+    iso: "ben",
+    writingDirection: "left-to-right",
+    scriptType: "syllabic",
+  },
+  {
+    name: "Tamil",
+    iso: "tam",
+    writingDirection: "left-to-right",
+    scriptType: "syllabic",
+  },
+  {
+    name: "Telugu",
+    iso: "tel",
+    writingDirection: "left-to-right",
+    scriptType: "syllabic",
+  },
+  {
+    name: "Thai",
+    iso: "tha",
+    writingDirection: "left-to-right",
+    scriptType: "syllabic",
+  },
+  {
+    name: "Lao",
+    iso: "lao",
+    writingDirection: "left-to-right",
+    scriptType: "syllabic",
+  },
+  {
+    name: "Chinese",
+    iso: "zho",
+    writingDirection: "left-to-right",
+    scriptType: "logographic",
+  },
+  {
+    name: "Japanese",
+    iso: "jpn",
+    writingDirection: "left-to-right",
+    scriptType: "logographic",
+  },
+  {
+    name: "Korean",
+    iso: "kor",
+    writingDirection: "left-to-right",
+    scriptType: "syllabic",
+  },
+  {
+    name: "Vietnamese",
+    iso: "vie",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Indonesian",
+    iso: "ind",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
 ];
-
-export const osVersions: Record<string, string[]> = {
-  Windows: ["11 23H2", "11 24H2", "10 22H2"],
-  macOS: ["15.4.1", "14.7", "13.6"],
-  "Ubuntu Linux": ["24.04 LTS", "22.04 LTS"],
-  "Fedora Linux": ["40", "39"],
-  "Debian Linux": ["12.8", "11.11"],
-  "Arch Linux": ["2024.12.01", "2024.06.01"],
-  RHEL: ["9.4", "8.10"],
-  openSUSE: ["15.6", "15.5"],
-  "Mint Linux": ["22", "21.3"],
-  "Pop!_OS": ["22.04", "24.04"],
-};
 
 export const weights = [
   "Thin",
@@ -117,61 +364,16 @@ export const weights = [
   "ExtraBold",
   "Black",
 ];
+
 export const slopes = ["Upright", "Italic", "Oblique"];
-export const licenseTypes = [
-  "OFL",
-  "Commercial",
-  "Subscription",
-  "Trial",
-  "Freeware",
-];
-export const installStatuses = ["active", "active", "active", "disabled"];
+
 export const alphabetStatuses = ["full", "partial", "unsupported"];
-export const storageTypes = ["NVMe SSD", "SSD", "HDD"];
-export const scriptTypes = ["alphabetic", "syllabic", "logographic"];
-export const writingDirs = ["left-to-right", "right-to-left"];
-
-export const gpus = [
-  "NVIDIA RTX 4090",
-  "NVIDIA RTX 4080",
-  "NVIDIA RTX 4070",
-  "NVIDIA RTX 4060",
-  "NVIDIA RTX 3060",
-  "AMD Radeon RX 7800 XT",
-  "AMD Radeon RX 7600",
-  "Apple M3 Max GPU",
-  "Apple M3 Pro GPU",
-  "Apple M2 GPU",
-  "Intel UHD Graphics 770",
-  "Intel UHD Graphics 730",
-];
-
-export const processors = [
-  "Intel Core i9-14900K",
-  "Intel Core i7-14700K",
-  "Intel Core i7-13700K",
-  "Intel Core i5-13600K",
-  "Intel Core i5-13500",
-  "Intel Core i5-12400",
-  "AMD Ryzen 9 7950X",
-  "AMD Ryzen 7 7800X3D",
-  "AMD Ryzen 5 7600X",
-  "Apple M3 Max",
-  "Apple M3 Pro",
-  "Apple M2 Pro",
-  "Apple M2",
-];
 
 export const tables = [
-  "OS",
-  "Publisher",
   "Category",
   "Format",
   "Language",
-  "Workstation",
   "Font_family",
   "Typeface",
-  "License",
   "Alphabet",
-  "Installation",
 ];

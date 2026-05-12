@@ -139,7 +139,7 @@
     \SetCell[c=2]{c} Язык & \\
     PK & \tm{lang_pk}{id\_Язык} \\
        & Название \\
-    FK & \tm{lang_fk_iso}{id\_Код\_ISO} \\
+       & \tm{lang_fk_iso}{Код\_ISO} \\
     FK & \tm{lang_fk_wd}{id\_Направление} \\
     FK & \tm{lang_fk_st}{id\_Тип\_письм.} \\
 }
@@ -202,11 +202,6 @@
        & Название \\
 }
 
-\dbdict{d_iso}{-16em,-44em}{
-    \SetCell[c=2]{c} Код\_ISO & \\
-    PK & \tm{d_iso_pk}{id\_Код\_ISO} \\
-       & Код \\
-}
 
 \dbdict{d_wd}{-16em,-52em}{
     \SetCell[c=2]{c} Напр.\_письма & \\
@@ -359,11 +354,6 @@
 \draw[lnk] ([xshift=\xWestShift]os_fk_bit.west) -- ++(-\hgap,0) node[crd, above] {$\infty$}
     |- ([xshift={\dxEastShift + \hgap}]d_bit_pk.west)
     -- node[crd, above] {1} ([xshift=\dxEastShift]d_bit_pk.west);
-
-% Язык.id_Код_ISO → Код_ISO
-\draw[lnk] ([xshift=\xWestShift]lang_fk_iso.west) -- ++(-\hgap,0) node[crd, above] {$\infty$}
-    |- ([xshift={\hgap + \dxEastShift}]d_iso_pk.west)
-    -- node[crd, above] {1} ([xshift=\dxEastShift]d_iso_pk.west);
 
 % Язык.id_Направление → Направление_письма
 \draw[lnk] ([xshift=\xWestShift]lang_fk_wd.west) -- ++(-\hgap,0) node[crd, above] {$\infty$}
