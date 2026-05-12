@@ -330,8 +330,9 @@
     -- node[crd, above] {1} ([xshift=\dxEastShift]d_lictype_pk.west);
 
 % Начертание.id_Насыщенность → Насыщенность
-\draw[lnk] ([xshift=\xEastShift]tf_fk_w.west) -- ++(-\hgap*3,0) node[crd, below] {$\infty$}
-    |- ([xshift={\hgap + \dxEastShift}]d_weight_pk.west)
+\draw[lnk] ([xshift=\xEastShift]tf_fk_w.west)
+    -- ++(2.5em,0) node[crd, below] {$\infty$}
+    |- ([xshift=\dxEastShift]d_weight_pk.west)
     -- node[crd, above] {1} ([xshift=\dxEastShift]d_weight_pk.west);
 
 % Начертание.id_Наклон → Наклон
