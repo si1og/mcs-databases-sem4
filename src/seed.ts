@@ -488,7 +488,7 @@ class Seeder {
 
   private buildAlphabetPairs(): Array<[number, number]> {
     const languagesPerTypeface = COEFFICIENTS.alphabetsPerTypeface;
-    const extraTypefacesPerLanguage = COEFFICIENTS.alphabetsPerLangauge;
+    const typefacesPerLanguage = COEFFICIENTS.alphabetsPerLanguage;
 
     if (this.typefaces.length === 0) {
       throw new Error("Cannot seed Alphabet: no typefaces");
@@ -504,15 +504,15 @@ class Seeder {
       );
     }
 
-    if (extraTypefacesPerLanguage > this.typefaces.length) {
+    if (typefacesPerLanguage > this.typefaces.length) {
       throw new Error(
-        `Cannot seed Alphabet: alphabetsPerLangauge=${extraTypefacesPerLanguage}, but typefaces=${this.typefaces.length}`,
+        `Cannot seed Alphabet: alphabetsPerLanguage=${typefacesPerLanguage}, but typefaces=${this.typefaces.length}`,
       );
     }
 
-    const rowsByTypefaces = this.typefaces.length * languagesPerTypeface;
-    const rowsByLanguages = this.languageIds.length * extraTypefacesPerLanguage;
-    const totalAlphabetRows = rowsByTypefaces + rowsByLanguages;
+    const totalAlphabetRows =
+      this.typefaces.length * languagesPerTypeface +
+      this.languageIds.length * typefacesPerLanguage;
 
     if (totalAlphabetRows !== COUNTS.alphabets) {
       console.warn(
@@ -531,28 +531,19 @@ class Seeder {
     const pairs: Array<[number, number]> = [];
     const usedPairs = new Set<string>();
 
-    this.addPairsByTypefaceCoefficient(pairs, usedPairs, languagesPerTypeface);
+    const addPair = (typefaceId: number, languageId: number) => {
+      const key = `${typefaceId}:${languageId}`;
 
-    this.addPairsByLanguageCoefficient(
-      pairs,
-      usedPairs,
-      extraTypefacesPerLanguage,
-    );
+      if (usedPairs.has(key)) {
+        throw new Error(
+          `Cannot seed Alphabet: duplicated pair typeface=${typefaceId}, language=${languageId}`,
+        );
+      }
 
-    if (pairs.length !== totalAlphabetRows) {
-      throw new Error(
-        `Cannot seed Alphabet: created ${pairs.length}/${totalAlphabetRows} rows`,
-      );
-    }
+      usedPairs.add(key);
+      pairs.push([typefaceId, languageId]);
+    };
 
-    return pairs;
-  }
-
-  private addPairsByTypefaceCoefficient(
-    pairs: Array<[number, number]>,
-    usedPairs: Set<string>,
-    languagesPerTypeface: number,
-  ) {
     for (
       let typefaceIndex = 0;
       typefaceIndex < this.typefaces.length;
@@ -562,76 +553,46 @@ class Seeder {
 
       for (let offset = 0; offset < languagesPerTypeface; offset++) {
         const languageIndex =
-          (typefaceIndex * languagesPerTypeface + offset) %
-          this.languageIds.length;
+          (typefaceIndex + offset) % this.languageIds.length;
 
         const languageId = this.languageIds[languageIndex];
 
-        this.addAlphabetPair(pairs, usedPairs, typeface.id, languageId);
+        addPair(typeface.id, languageId);
       }
     }
-  }
 
-  private addPairsByLanguageCoefficient(
-    pairs: Array<[number, number]>,
-    usedPairs: Set<string>,
-    extraTypefacesPerLanguage: number,
-  ) {
     for (
       let languageIndex = 0;
       languageIndex < this.languageIds.length;
       languageIndex++
     ) {
       const languageId = this.languageIds[languageIndex];
-      let addedForLanguage = 0;
-      let attempt = 0;
+      const availableTypefaces = this.typefaces.filter(
+        (typeface) => !usedPairs.has(`${typeface.id}:${languageId}`),
+      );
 
-      while (addedForLanguage < extraTypefacesPerLanguage) {
-        if (attempt >= this.typefaces.length) {
-          throw new Error(
-            `Cannot seed Alphabet: language ${languageId} received ${addedForLanguage}/${extraTypefacesPerLanguage} extra typefaces`,
-          );
-        }
+      if (typefacesPerLanguage > availableTypefaces.length) {
+        throw new Error(
+          `Cannot seed Alphabet: language ${languageId} has only ${availableTypefaces.length} available typefaces`,
+        );
+      }
 
+      for (let offset = 0; offset < typefacesPerLanguage; offset++) {
         const typefaceIndex =
-          (languageIndex * extraTypefacesPerLanguage + attempt) %
-          this.typefaces.length;
+          (languageIndex + offset) % availableTypefaces.length;
+        const typeface = availableTypefaces[typefaceIndex];
 
-        const typeface = this.typefaces[typefaceIndex];
-        const key = this.makeAlphabetPairKey(typeface.id, languageId);
-
-        attempt++;
-
-        if (usedPairs.has(key)) {
-          continue;
-        }
-
-        this.addAlphabetPair(pairs, usedPairs, typeface.id, languageId);
-        addedForLanguage++;
+        addPair(typeface.id, languageId);
       }
     }
-  }
 
-  private addAlphabetPair(
-    pairs: Array<[number, number]>,
-    usedPairs: Set<string>,
-    typefaceId: number,
-    languageId: number,
-  ) {
-    const key = this.makeAlphabetPairKey(typefaceId, languageId);
-
-    if (usedPairs.has(key)) {
+    if (pairs.length !== totalAlphabetRows) {
       throw new Error(
-        `Cannot seed Alphabet: duplicated pair typeface=${typefaceId}, language=${languageId}`,
+        `Cannot seed Alphabet: created ${pairs.length}/${totalAlphabetRows} rows`,
       );
     }
 
-    usedPairs.add(key);
-    pairs.push([typefaceId, languageId]);
-  }
-
-  private makeAlphabetPairKey(typefaceId: number, languageId: number): string {
-    return `${typefaceId}:${languageId}`;
+    return pairs;
   }
 
   private async insertAlphabetBatch(placeholders: string[], values: unknown[]) {

@@ -7,10 +7,10 @@ export const BASE_COUNTS = {
 } as const;
 
 export const COEFFICIENT_LIMITS = {
-  fontFamiliesPerCategory: { min: 24, max: 24 },
-  typefacesPerFamily: { min: 27, max: 27 },
-  alphabetsPerTypeface: { min: 39, max: 39 },
-  alphabetsPerLangauge: { min: 20, max: 20 },
+  fontFamiliesPerCategory: { min: 30, max: 35 },
+  typefacesPerFamily: { min: 18, max: 22 },
+  alphabetsPerTypeface: { min: 37, max: 39 },
+  alphabetsPerLanguage: { min: 15, max: 25 },
 } as const;
 
 export const COEFFICIENTS = {
@@ -24,8 +24,8 @@ export const COEFFICIENTS = {
     COEFFICIENT_LIMITS.alphabetsPerTypeface,
   ),
 
-  alphabetsPerLangauge: faker.number.int(
-    COEFFICIENT_LIMITS.alphabetsPerLangauge,
+  alphabetsPerLanguage: faker.number.int(
+    COEFFICIENT_LIMITS.alphabetsPerLanguage,
   ),
 } as const;
 
@@ -42,7 +42,7 @@ export const COUNTS = {
     COEFFICIENTS.typefacesPerFamily,
 
   alphabets:
-    BASE_COUNTS.languages * COEFFICIENTS.alphabetsPerLangauge +
+    BASE_COUNTS.languages * COEFFICIENTS.alphabetsPerLanguage +
     BASE_COUNTS.categories *
       COEFFICIENTS.fontFamiliesPerCategory *
       COEFFICIENTS.typefacesPerFamily *
