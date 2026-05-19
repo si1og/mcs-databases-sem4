@@ -435,39 +435,17 @@
 
 \subsection{Создание таблиц базы данных и генерация записей}
 
-Для создания таблиц базы данных был написан SQL-скрипт для СУБД PostgreSQL. В проекте используется база данных \mintinline{text}{typography}, запущенная в контейнере Docker. Контейнер базы данных создаётся на основе образа Postgretext и доступен на локальном порту \mintinline{text}{5432}.
+Для создания таблиц базы данных был написан SQL-скрипт для СУБД PostgreSQL (приложение А). В проекте используется база данных \mintinline{text}{typography}, запущенная в контейнере Docker. Контейнер базы данных создаётся на основе образа PostgreSQL и доступен на локальном порту \mintinline{text}{5432}.
 
-Создание таблиц выполняется отдельным скриптом инициализации. В нём последовательно создаются таблицы предметной области: \mintinline{text}{Category}, \mintinline{text}{Font_family}, \mintinline{text}{Format}, \mintinline{text}{Typeface}, \mintinline{text}{Language} и \mintinline{text}{Alphabet}. Порядок создания таблиц выбран с учётом внешних ключей: сначала создаются справочные и независимые таблицы, затем таблицы, которые на них ссылаются.
+В указанном выше SQL-скрипте последовательно создаются таблицы предметной области: \mintinline{text}{Category}, \mintinline{text}{Font_family}, \mintinline{text}{Format}, \mintinline{text}{Typeface}, \mintinline{text}{Language} и \mintinline{text}{Alphabet}. Порядок создания таблиц выбран с учётом внешних ключей: сначала создаются справочные и независимые таблицы, затем таблицы, которые на них ссылаются.
 
 Структура связей между таблицами, используемыми при программной реализации базы данных, представлена на уменьшенной схеме базы данных на рисунке~\ref{fig:db-schema-small}.
 
-Для заполнения базы данных тестовыми данными используется программа на TypeScript. Подключение к базе данных выполняется при помощи библиотеки \mintinline{text}{pg}. Для генерации правдоподобных значений используется библиотека \mintinline{text}{@faker-js/faker}. Запуск скриптов выполняется через \mintinline{text}{tsx}, что позволяет запускать TypeScript-файлы без отдельной ручной компиляции.
+Для заполнения базы данных тестовыми данными используется программа на TypeScript (Приложение Б). Подключение к базе данных выполняется при помощи библиотеки \mintinline{text}{pg}. Для генерации правдоподобных значений используется библиотека \mintinline{text}{@faker-js/faker}. Запуск скриптов выполняется через \mintinline{text}{tsx}, что позволяет запускать TypeScript-файлы без отдельной ручной компиляции.
 
 Генерация записей должна выполняться в том же порядке, что и создание зависимостей между таблицами. Сначала заполняются таблицы \mintinline{text}{Category}, \mintinline{text}{Format} и \mintinline{text}{Language}, так как они не зависят от других таблиц. Затем создаются записи в таблице \mintinline{text}{Font_family}, для каждой из которых выбирается существующая категория. После этого создаются записи в таблице \mintinline{text}{Typeface}, где для каждого начертания выбираются существующие гарнитура и формат. Последней заполняется таблица \mintinline{text}{Alphabet}, связывающая существующие языки и начертания.
 
-Количество записей в каждой таблице приведено в таблице~\ref{table:record-count}.
-
-\begin{table}[H]
-    \centering
-    \caption{Количество записей в таблицах}
-    \label{table:record-count}
-    \begin{tblr}{
-        colspec = {X[2,l]X[1,c]},
-        hline{1-2},
-        hline{Z},
-        vlines,
-        rows = {abovesep=3pt, belowsep=3pt, font=\footnotesize},
-        row{1} = {font=\bfseries\small},
-    }
-        Название таблицы & Количество записей \\
-        \mintinline{text}{Category} & 10 \\
-        \mintinline{text}{Format} & 6 \\
-        \mintinline{text}{Language} & 50 \\
-        \mintinline{text}{Font_family} & 100 \\
-        \mintinline{text}{Typeface} & 500 \\
-        \mintinline{text}{Alphabet} & 1000 \\
-    \end{tblr}
-\end{table}
+Количество записей в каждой таблице приведено на схеме базы данных (рис. 5).
 
 \clearpage
 \refstepcounter{figure}

@@ -7,9 +7,10 @@ export const BASE_COUNTS = {
 } as const;
 
 export const COEFFICIENT_LIMITS = {
-  fontFamiliesPerCategory: { min: 450, max: 550 },
-  typefacesPerFamily: { min: 8, max: 10 },
-  alphabetsPerTypeface: { min: 6, max: 8 },
+  fontFamiliesPerCategory: { min: 24, max: 24 },
+  typefacesPerFamily: { min: 27, max: 27 },
+  alphabetsPerTypeface: { min: 39, max: 39 },
+  alphabetsPerLangauge: { min: 20, max: 20 },
 } as const;
 
 export const COEFFICIENTS = {
@@ -21,6 +22,10 @@ export const COEFFICIENTS = {
 
   alphabetsPerTypeface: faker.number.int(
     COEFFICIENT_LIMITS.alphabetsPerTypeface,
+  ),
+
+  alphabetsPerLangauge: faker.number.int(
+    COEFFICIENT_LIMITS.alphabetsPerLangauge,
   ),
 } as const;
 
@@ -37,10 +42,11 @@ export const COUNTS = {
     COEFFICIENTS.typefacesPerFamily,
 
   alphabets:
+    BASE_COUNTS.languages * COEFFICIENTS.alphabetsPerLangauge +
     BASE_COUNTS.categories *
-    COEFFICIENTS.fontFamiliesPerCategory *
-    COEFFICIENTS.typefacesPerFamily *
-    COEFFICIENTS.alphabetsPerTypeface,
+      COEFFICIENTS.fontFamiliesPerCategory *
+      COEFFICIENTS.typefacesPerFamily *
+      COEFFICIENTS.alphabetsPerTypeface,
 } as const;
 export const categoryNames = [
   "Serif",

@@ -1,3 +1,419 @@
+\section*{Приложение Б. Программа на TypeScript для заполнения базы данных тестовыми данными}
+\addcontentsline{toc}{section}{Приложение Б. Программа на TypeScript для заполнения базы данных тестовыми данными}
+
+\renewcommand{\theFancyVerbLine}{%
+    \scriptsize\ttfamily\textcolor{gray}{\arabic{FancyVerbLine}}%
+}
+
+\begin{minted}[linenos, numbersep=10pt, firstnumber=1, fontsize=\scriptsize]{typescript}
+
+// db.ts
+import pg from "pg";
+
+export const pool = new pg.Pool({
+  host: "localhost",
+  port: 5432,
+  database: "typography",
+  user: "ilyasemenov",
+  password: "type",
+});
+
+
+// init.ts
+import { readFileSync } from "fs";
+import { pool } from "./db.js";
+
+async function init() {
+  const sql = readFileSync("init.sql", "utf-8");
+  await pool.query(sql);
+  console.log("Tables created successfully");
+  await pool.end();
+}
+
+// constants.ts
+import { faker } from "@faker-js/faker";
+
+export const BASE_COUNTS = {
+  categories: 12,
+  formats: 5,
+  languages: 40,
+} as const;
+
+export const COEFFICIENT_LIMITS = {
+  fontFamiliesPerCategory: { min: 450, max: 550 },
+  typefacesPerFamily: { min: 8, max: 10 },
+  alphabetsPerTypeface: { min: 6, max: 8 },
+} as const;
+
+export const COEFFICIENTS = {
+  fontFamiliesPerCategory: faker.number.int(
+    COEFFICIENT_LIMITS.fontFamiliesPerCategory,
+  ),
+
+  typefacesPerFamily: faker.number.int(COEFFICIENT_LIMITS.typefacesPerFamily),
+
+  alphabetsPerTypeface: faker.number.int(
+    COEFFICIENT_LIMITS.alphabetsPerTypeface,
+  ),
+} as const;
+
+export const COUNTS = {
+  categories: BASE_COUNTS.categories,
+  formats: BASE_COUNTS.formats,
+  languages: BASE_COUNTS.languages,
+
+  fontFamilies: BASE_COUNTS.categories * COEFFICIENTS.fontFamiliesPerCategory,
+
+  typefaces:
+    BASE_COUNTS.categories *
+    COEFFICIENTS.fontFamiliesPerCategory *
+    COEFFICIENTS.typefacesPerFamily,
+
+  alphabets:
+    BASE_COUNTS.categories *
+    COEFFICIENTS.fontFamiliesPerCategory *
+    COEFFICIENTS.typefacesPerFamily *
+    COEFFICIENTS.alphabetsPerTypeface,
+} as const;
+export const categoryNames = [
+  "Serif",
+  "Sans-serif",
+  "Monospace",
+  "Display",
+  "Handwriting",
+  "Slab-serif",
+  "Geometric",
+  "Humanist",
+  "Grotesque",
+  "Neo-grotesque",
+  "Transitional",
+  "Didone",
+];
+
+export const categoryDescs: Record<string, string> = {
+  Serif: "Typefaces with decorative strokes at the ends of letterforms",
+  "Sans-serif": "Typefaces without decorative strokes",
+  Monospace: "Typefaces where each character occupies the same width",
+  Display: "Typefaces designed for headlines and large sizes",
+  Handwriting: "Typefaces imitating handwritten text",
+  "Slab-serif": "Typefaces with thick rectangular serifs",
+  Geometric: "Sans-serif typefaces based on geometric shapes",
+  Humanist: "Typefaces with organic strokes inspired by calligraphy",
+  Grotesque: "Early sans-serif typefaces with irregular proportions",
+  "Neo-grotesque": "Refined sans-serif typefaces with uniform strokes",
+  Transitional: "Serif typefaces bridging old-style and modern designs",
+  Didone: "High-contrast serif typefaces with thin hairlines",
+};
+
+export const formats = [
+  {
+    name: "TrueType",
+    ext: ".ttf",
+    year: 1991,
+    desc: "Scalable font format developed by Apple",
+    web: false,
+  },
+  {
+    name: "OpenType",
+    ext: ".otf",
+    year: 1996,
+    desc: "Scalable font format by Microsoft and Adobe",
+    web: false,
+  },
+  {
+    name: "WOFF",
+    ext: ".woff",
+    year: 2010,
+    desc: "Web Open Font Format",
+    web: true,
+  },
+  {
+    name: "WOFF2",
+    ext: ".woff2",
+    year: 2014,
+    desc: "Compressed Web Open Font Format",
+    web: true,
+  },
+  {
+    name: "TrueType Collection",
+    ext: ".ttc",
+    year: 1994,
+    desc: "Multiple TrueType fonts in a single file",
+    web: false,
+  },
+];
+
+export const languages = [
+  {
+    name: "English",
+    iso: "eng",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Russian",
+    iso: "rus",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "German",
+    iso: "deu",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "French",
+    iso: "fra",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Spanish",
+    iso: "spa",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Italian",
+    iso: "ita",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Portuguese",
+    iso: "por",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Dutch",
+    iso: "nld",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Polish",
+    iso: "pol",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Czech",
+    iso: "ces",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Slovak",
+    iso: "slk",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Ukrainian",
+    iso: "ukr",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Belarusian",
+    iso: "bel",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Serbian",
+    iso: "srp",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Croatian",
+    iso: "hrv",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Bulgarian",
+    iso: "bul",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Greek",
+    iso: "ell",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Turkish",
+    iso: "tur",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Finnish",
+    iso: "fin",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Swedish",
+    iso: "swe",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Norwegian",
+    iso: "nor",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Danish",
+    iso: "dan",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Icelandic",
+    iso: "isl",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Irish",
+    iso: "gle",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Welsh",
+    iso: "cym",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Arabic",
+    iso: "ara",
+    writingDirection: "right-to-left",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Hebrew",
+    iso: "heb",
+    writingDirection: "right-to-left",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Persian",
+    iso: "fas",
+    writingDirection: "right-to-left",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Urdu",
+    iso: "urd",
+    writingDirection: "right-to-left",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Hindi",
+    iso: "hin",
+    writingDirection: "left-to-right",
+    scriptType: "syllabic",
+  },
+  {
+    name: "Bengali",
+    iso: "ben",
+    writingDirection: "left-to-right",
+    scriptType: "syllabic",
+  },
+  {
+    name: "Tamil",
+    iso: "tam",
+    writingDirection: "left-to-right",
+    scriptType: "syllabic",
+  },
+  {
+    name: "Telugu",
+    iso: "tel",
+    writingDirection: "left-to-right",
+    scriptType: "syllabic",
+  },
+  {
+    name: "Thai",
+    iso: "tha",
+    writingDirection: "left-to-right",
+    scriptType: "syllabic",
+  },
+  {
+    name: "Lao",
+    iso: "lao",
+    writingDirection: "left-to-right",
+    scriptType: "syllabic",
+  },
+  {
+    name: "Chinese",
+    iso: "zho",
+    writingDirection: "left-to-right",
+    scriptType: "logographic",
+  },
+  {
+    name: "Japanese",
+    iso: "jpn",
+    writingDirection: "left-to-right",
+    scriptType: "logographic",
+  },
+  {
+    name: "Korean",
+    iso: "kor",
+    writingDirection: "left-to-right",
+    scriptType: "syllabic",
+  },
+  {
+    name: "Vietnamese",
+    iso: "vie",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+  {
+    name: "Indonesian",
+    iso: "ind",
+    writingDirection: "left-to-right",
+    scriptType: "alphabetic",
+  },
+];
+
+export const weights = [
+  "Thin",
+  "ExtraLight",
+  "Light",
+  "Regular",
+  "Medium",
+  "SemiBold",
+  "Bold",
+  "ExtraBold",
+  "Black",
+];
+
+export const slopes = ["Upright", "Italic", "Oblique"];
+
+export const alphabetStatuses = ["full", "partial", "unsupported"];
+
+export const tables = [
+  "Category",
+  "Format",
+  "Language",
+  "Font_family",
+  "Typeface",
+  "Alphabet",
+];
+
+init().catch(console.error);
+
+// seed.ts
 import { faker } from "@faker-js/faker";
 import { pool } from "./db.js";
 import {
@@ -55,7 +471,6 @@ class Seeder {
       await this.seedTypefaces();
       await this.seedAlphabets();
 
-      await this.updateAlphabetCounts();
       await this.updateCategoryCounts();
 
       await this.client.query("COMMIT");
@@ -444,37 +859,42 @@ class Seeder {
   private async seedAlphabets() {
     let created = 0;
 
-    const alphabetPairs = this.buildAlphabetPairs();
-
     const batchSize = 5000;
     let values: unknown[] = [];
     let placeholders: string[] = [];
 
-    for (const [typefaceId, languageId] of alphabetPairs) {
-      const index = values.length;
-
-      placeholders.push(
-        `($${index + 1}, $${index + 2}, $${index + 3}, $${index + 4}, $${index + 5}, $${index + 6})`,
+    for (const typeface of this.typefaces) {
+      const selectedLanguageIds = this.pickLanguagesForTypeface(
+        typeface.id,
+        COEFFICIENTS.alphabetsPerTypeface,
       );
 
-      values.push(
-        0,
-        0,
-        this.makeVerificationDate(),
-        this.makeAlphabetStatus(),
-        typefaceId,
-        languageId,
-      );
+      for (const languageId of selectedLanguageIds) {
+        const index = values.length;
 
-      created++;
+        placeholders.push(
+          `($${index + 1}, $${index + 2}, $${index + 3}, $${index + 4}, $${index + 5}, $${index + 6})`,
+        );
 
-      if (placeholders.length >= batchSize) {
-        await this.insertAlphabetBatch(placeholders, values);
-        values = [];
-        placeholders = [];
+        values.push(
+          this.makeTypefaceCountInSystem(),
+          this.makeSupportedFamilyCount(),
+          this.makeVerificationDate(),
+          this.makeAlphabetStatus(),
+          typeface.id,
+          languageId,
+        );
 
-        if (created % 50_000 === 0) {
-          console.log(`  Alphabet: ${created}/${alphabetPairs.length}`);
+        created++;
+
+        if (placeholders.length >= batchSize) {
+          await this.insertAlphabetBatch(placeholders, values);
+          values = [];
+          placeholders = [];
+
+          if (created % 50_000 === 0) {
+            console.log(`  Alphabet: ${created}/${COUNTS.alphabets}`);
+          }
         }
       }
     }
@@ -484,154 +904,6 @@ class Seeder {
     }
 
     console.log(`Alphabet: ${created}`);
-  }
-
-  private buildAlphabetPairs(): Array<[number, number]> {
-    const languagesPerTypeface = COEFFICIENTS.alphabetsPerTypeface;
-    const extraTypefacesPerLanguage = COEFFICIENTS.alphabetsPerLangauge;
-
-    if (this.typefaces.length === 0) {
-      throw new Error("Cannot seed Alphabet: no typefaces");
-    }
-
-    if (this.languageIds.length === 0) {
-      throw new Error("Cannot seed Alphabet: no languages");
-    }
-
-    if (languagesPerTypeface > this.languageIds.length) {
-      throw new Error(
-        `Cannot seed Alphabet: alphabetsPerTypeface=${languagesPerTypeface}, but languages=${this.languageIds.length}`,
-      );
-    }
-
-    if (extraTypefacesPerLanguage > this.typefaces.length) {
-      throw new Error(
-        `Cannot seed Alphabet: alphabetsPerLangauge=${extraTypefacesPerLanguage}, but typefaces=${this.typefaces.length}`,
-      );
-    }
-
-    const rowsByTypefaces = this.typefaces.length * languagesPerTypeface;
-    const rowsByLanguages = this.languageIds.length * extraTypefacesPerLanguage;
-    const totalAlphabetRows = rowsByTypefaces + rowsByLanguages;
-
-    if (totalAlphabetRows !== COUNTS.alphabets) {
-      console.warn(
-        `Alphabet target mismatch: generated ${totalAlphabetRows}, constants contain ${COUNTS.alphabets}`,
-      );
-    }
-
-    if (totalAlphabetRows > this.typefaces.length * this.languageIds.length) {
-      throw new Error(
-        `Cannot seed Alphabet: requested ${totalAlphabetRows} unique pairs, but maximum is ${
-          this.typefaces.length * this.languageIds.length
-        }`,
-      );
-    }
-
-    const pairs: Array<[number, number]> = [];
-    const usedPairs = new Set<string>();
-
-    this.addPairsByTypefaceCoefficient(pairs, usedPairs, languagesPerTypeface);
-
-    this.addPairsByLanguageCoefficient(
-      pairs,
-      usedPairs,
-      extraTypefacesPerLanguage,
-    );
-
-    if (pairs.length !== totalAlphabetRows) {
-      throw new Error(
-        `Cannot seed Alphabet: created ${pairs.length}/${totalAlphabetRows} rows`,
-      );
-    }
-
-    return pairs;
-  }
-
-  private addPairsByTypefaceCoefficient(
-    pairs: Array<[number, number]>,
-    usedPairs: Set<string>,
-    languagesPerTypeface: number,
-  ) {
-    for (
-      let typefaceIndex = 0;
-      typefaceIndex < this.typefaces.length;
-      typefaceIndex++
-    ) {
-      const typeface = this.typefaces[typefaceIndex];
-
-      for (let offset = 0; offset < languagesPerTypeface; offset++) {
-        const languageIndex =
-          (typefaceIndex * languagesPerTypeface + offset) %
-          this.languageIds.length;
-
-        const languageId = this.languageIds[languageIndex];
-
-        this.addAlphabetPair(pairs, usedPairs, typeface.id, languageId);
-      }
-    }
-  }
-
-  private addPairsByLanguageCoefficient(
-    pairs: Array<[number, number]>,
-    usedPairs: Set<string>,
-    extraTypefacesPerLanguage: number,
-  ) {
-    for (
-      let languageIndex = 0;
-      languageIndex < this.languageIds.length;
-      languageIndex++
-    ) {
-      const languageId = this.languageIds[languageIndex];
-      let addedForLanguage = 0;
-      let attempt = 0;
-
-      while (addedForLanguage < extraTypefacesPerLanguage) {
-        if (attempt >= this.typefaces.length) {
-          throw new Error(
-            `Cannot seed Alphabet: language ${languageId} received ${addedForLanguage}/${extraTypefacesPerLanguage} extra typefaces`,
-          );
-        }
-
-        const typefaceIndex =
-          (languageIndex * extraTypefacesPerLanguage + attempt) %
-          this.typefaces.length;
-
-        const typeface = this.typefaces[typefaceIndex];
-        const key = this.makeAlphabetPairKey(typeface.id, languageId);
-
-        attempt++;
-
-        if (usedPairs.has(key)) {
-          continue;
-        }
-
-        this.addAlphabetPair(pairs, usedPairs, typeface.id, languageId);
-        addedForLanguage++;
-      }
-    }
-  }
-
-  private addAlphabetPair(
-    pairs: Array<[number, number]>,
-    usedPairs: Set<string>,
-    typefaceId: number,
-    languageId: number,
-  ) {
-    const key = this.makeAlphabetPairKey(typefaceId, languageId);
-
-    if (usedPairs.has(key)) {
-      throw new Error(
-        `Cannot seed Alphabet: duplicated pair typeface=${typefaceId}, language=${languageId}`,
-      );
-    }
-
-    usedPairs.add(key);
-    pairs.push([typefaceId, languageId]);
-  }
-
-  private makeAlphabetPairKey(typefaceId: number, languageId: number): string {
-    return `${typefaceId}:${languageId}`;
   }
 
   private async insertAlphabetBatch(placeholders: string[], values: unknown[]) {
@@ -653,27 +925,6 @@ class Seeder {
     );
   }
 
-  private async updateAlphabetCounts() {
-    await this.client.query(`
-      UPDATE Alphabet a
-      SET
-        Typeface_count_in_system = stats.typeface_count,
-        Supported_family_count = stats.family_count
-      FROM (
-        SELECT
-          a2.id_Language,
-          COUNT(DISTINCT a2.id_Typeface) AS typeface_count,
-          COUNT(DISTINCT t.id_Font_family) AS family_count
-        FROM Alphabet a2
-        JOIN Typeface t ON t.id_Typeface = a2.id_Typeface
-        GROUP BY a2.id_Language
-      ) stats
-      WHERE stats.id_Language = a.id_Language
-    `);
-
-    console.log("Alphabet counts updated");
-  }
-
   private async updateCategoryCounts() {
     await this.client.query(`
       UPDATE Category
@@ -685,6 +936,23 @@ class Seeder {
     `);
 
     console.log("Category counts updated");
+  }
+
+  private pickLanguagesForTypeface(
+    typefaceId: number,
+    count: number,
+  ): number[] {
+    const result: number[] = [];
+
+    const start = typefaceId % this.languageIds.length;
+
+    for (let i = 0; i < count; i++) {
+      const languageId =
+        this.languageIds[(start + i) % this.languageIds.length];
+      result.push(languageId);
+    }
+
+    return result;
   }
 
   private makeFontFamilyName(index: number): string {
@@ -701,6 +969,20 @@ class Seeder {
 
   private makeTypefaceFamilyPrefix(fontFamilyId: number): string {
     return `Family ${fontFamilyId}`;
+  }
+
+  private makeTypefaceCountInSystem(): number {
+    return faker.number.int({
+      min: 1,
+      max: COEFFICIENTS.typefacesPerFamily,
+    });
+  }
+
+  private makeSupportedFamilyCount(): number {
+    return faker.number.int({
+      min: 1,
+      max: COEFFICIENTS.fontFamiliesPerCategory,
+    });
   }
 
   private makeVerificationDate(): string | null {
@@ -751,3 +1033,6 @@ new Seeder().run().catch((error) => {
   console.error(error);
   process.exit(1);
 });
+
+
+\end{minted}
