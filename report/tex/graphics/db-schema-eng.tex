@@ -1,8 +1,8 @@
 \documentclass[a3paper, landscape]{article}
 \usepackage[left=0.5cm, right=0.5cm, top=0.5cm, bottom=0.5cm]{geometry}
-\usepackage[T1]{fontenc}
+\usepackage[T2A]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
+\usepackage[russian]{babel}
 \thispagestyle{empty}
 
 \usepackage{tabularray}
@@ -139,7 +139,7 @@
     \SetCell[c=2]{c} Language & \\
     PK & \tm{lang_pk}{id\_Language} \\
        & Name \\
-    FK & \tm{lang_fk_iso}{id\_ISO\_code} \\
+       & ISO\_code \\
     FK & \tm{lang_fk_wd}{id\_Writing\_direction} \\
     FK & \tm{lang_fk_st}{id\_Script\_type} \\
 }
@@ -200,12 +200,6 @@
     \SetCell[c=2]{c} License\_type & \\
     PK & \tm{d_lictype_pk}{id\_License\_type} \\
        & Name \\
-}
-
-\dbdict{d_iso}{-16em,-44em}{
-    \SetCell[c=2]{c} ISO\_code & \\
-    PK & \tm{d_iso_pk}{id\_ISO\_code} \\
-       & Code \\
 }
 
 \dbdict{d_wd}{-16em,-52em}{
@@ -360,11 +354,6 @@
     |- ([xshift={\dxEastShift + \hgap}]d_bit_pk.west)
     -- node[crd, above] {1} ([xshift=\dxEastShift]d_bit_pk.west);
 
-% Language.id_ISO_code -> ISO_code.id_ISO_code
-\draw[lnk] ([xshift=\xWestShift]lang_fk_iso.west) -- ++(-\hgap,0) node[crd, above] {$\infty$}
-    |- ([xshift={\hgap + \dxEastShift}]d_iso_pk.west)
-    -- node[crd, above] {1} ([xshift=\dxEastShift]d_iso_pk.west);
-
 % Language.id_Writing_direction -> Writing_direction.id_Writing_direction
 \draw[lnk] ([xshift=\xWestShift]lang_fk_wd.west) -- ++(-\hgap,0) node[crd, above] {$\infty$}
     |- ([xshift={\hgap + \dxEastShift}]d_wd_pk.west)
@@ -400,7 +389,6 @@
 
 \node[ann, above=0.3em of d_country] {1; --; --};
 \node[ann, above=0.3em of d_lictype] {1; --; --};
-\node[ann, above=0.3em of d_iso] {1; --; --};
 \node[ann, above=0.3em of d_wd] {1; --; --};
 \node[ann, above=0.3em of d_st] {1; --; --};
 \node[ann, above=0.3em of d_weight] {1; --; --};
@@ -411,6 +399,6 @@
 \node[ann, above=0.3em of d_bit] {1; --; --};
 
 \end{tikzpicture}
-\caption{Database schema in English}
+\caption{Схема базы данных на английском языке}
 \end{figure}
 \end{document}

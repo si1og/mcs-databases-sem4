@@ -420,7 +420,7 @@
     pages=1,
     landscape,
     fitpaper,
-    pagecommand={\thispagestyle{plain}}
+    pagecommand={\thispagestyle{empty}}
 ]{tex/graphics/db-schema.pdf}
 
 \clearpage
@@ -430,29 +430,39 @@
     pages=1,
     landscape,
     fitpaper,
-    pagecommand={\thispagestyle{plain}}
+    pagecommand={\thispagestyle{empty}}
 ]{tex/graphics/db-schema-eng.pdf}
 
 \subsection{Создание таблиц базы данных и генерация записей}
 
-Для создания таблиц базы данных был написан SQL-скрипт для СУБД PostgreSQL (приложение А). В проекте используется база данных \mintinline{text}{typography}, запущенная в контейнере Docker. Контейнер базы данных создаётся на основе образа PostgreSQL и доступен на локальном порту \mintinline{text}{5432}.
+Для создания таблиц базы данных был написан SQL-скрипт для СУБД PostgreSQL (\hyperref[app:init-sql]{приложение А}). В проекте используется база данных \mintinline{text}{typography}, запущенная в контейнере Docker. Контейнер базы данных создаётся на основе образа PostgreSQL и доступен на локальном порту \mintinline{text}{5432}.
 
 В указанном выше SQL-скрипте последовательно создаются таблицы предметной области: \mintinline{text}{Category}, \mintinline{text}{Font_family}, \mintinline{text}{Format}, \mintinline{text}{Typeface}, \mintinline{text}{Language} и \mintinline{text}{Alphabet}. Порядок создания таблиц выбран с учётом внешних ключей: сначала создаются справочные и независимые таблицы, затем таблицы, которые на них ссылаются.
 
-Структура связей между таблицами, используемыми при программной реализации базы данных, представлена на уменьшенной схеме базы данных на рисунке~\ref{fig:db-schema-small}.
+Структура связей между таблицами, используемыми при программной реализации базы данных, представлена на уменьшенных схемах базы данных на рисунках~\ref{fig:db-schema-small-ru} и~\ref{fig:db-schema-small-eng}.
 
-Для заполнения базы данных тестовыми данными используется программа на TypeScript (Приложение Б). Подключение к базе данных выполняется при помощи библиотеки \mintinline{text}{pg}. Для генерации правдоподобных значений используется библиотека \mintinline{text}{@faker-js/faker}. Запуск скриптов выполняется через \mintinline{text}{tsx}, что позволяет запускать TypeScript-файлы без отдельной ручной компиляции.
+Для заполнения базы данных тестовыми данными используется программа на TypeScript (\hyperref[app:seed-ts]{приложение Б}). Подключение к базе данных выполняется при помощи библиотеки \mintinline{text}{pg}. Для генерации правдоподобных значений используется библиотека \mintinline{text}{@faker-js/faker}. Запуск скриптов выполняется в среде Node.js с использованием \mintinline{text}{tsx}.
 
 Генерация записей должна выполняться в том же порядке, что и создание зависимостей между таблицами. Сначала заполняются таблицы \mintinline{text}{Category}, \mintinline{text}{Format} и \mintinline{text}{Language}, так как они не зависят от других таблиц. Затем создаются записи в таблице \mintinline{text}{Font_family}, для каждой из которых выбирается существующая категория. После этого создаются записи в таблице \mintinline{text}{Typeface}, где для каждого начертания выбираются существующие гарнитура и формат. Последней заполняется таблица \mintinline{text}{Alphabet}, связывающая существующие языки и начертания.
 
-Количество записей в каждой таблице приведено на схеме базы данных (рис. 5).
+Количество записей в каждой таблице приведено на схемах базы данных (рисунки~\ref{fig:db-schema-small-ru} и~\ref{fig:db-schema-small-eng}).
 
 \clearpage
 \refstepcounter{figure}
-\label{fig:db-schema-small}
+\label{fig:db-schema-small-ru}
 \includepdf[
     pages=1,
     landscape,
     fitpaper,
-    pagecommand={\thispagestyle{plain}}
+    pagecommand={\thispagestyle{empty}}
 ]{tex/graphics/db-schema-small.pdf}
+
+\clearpage
+\refstepcounter{figure}
+\label{fig:db-schema-small-eng}
+\includepdf[
+    pages=1,
+    landscape,
+    fitpaper,
+    pagecommand={\thispagestyle{empty}}
+]{tex/graphics/db-schema-small-eng.pdf}

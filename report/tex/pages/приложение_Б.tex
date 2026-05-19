@@ -1,4 +1,6 @@
 \section*{Приложение Б. Программа на TypeScript для заполнения базы данных тестовыми данными}
+\phantomsection
+\label{app:seed-ts}
 \addcontentsline{toc}{section}{Приложение Б. Программа на TypeScript для заполнения базы данных тестовыми данными}
 
 \renewcommand{\theFancyVerbLine}{%
@@ -30,6 +32,9 @@ async function init() {
   await pool.end();
 }
 
+init().catch(console.error);
+
+
 // constants.ts
 import { faker } from "@faker-js/faker";
 
@@ -40,9 +45,10 @@ export const BASE_COUNTS = {
 } as const;
 
 export const COEFFICIENT_LIMITS = {
-  fontFamiliesPerCategory: { min: 450, max: 550 },
-  typefacesPerFamily: { min: 8, max: 10 },
-  alphabetsPerTypeface: { min: 6, max: 8 },
+  fontFamiliesPerCategory: { min: 30, max: 35 },
+  typefacesPerFamily: { min: 18, max: 22 },
+  alphabetsPerTypeface: { min: 37, max: 39 },
+  alphabetsPerLanguage: { min: 15, max: 25 },
 } as const;
 
 export const COEFFICIENTS = {
@@ -54,6 +60,10 @@ export const COEFFICIENTS = {
 
   alphabetsPerTypeface: faker.number.int(
     COEFFICIENT_LIMITS.alphabetsPerTypeface,
+  ),
+
+  alphabetsPerLanguage: faker.number.int(
+    COEFFICIENT_LIMITS.alphabetsPerLanguage,
   ),
 } as const;
 
@@ -70,10 +80,11 @@ export const COUNTS = {
     COEFFICIENTS.typefacesPerFamily,
 
   alphabets:
+    BASE_COUNTS.languages * COEFFICIENTS.alphabetsPerLanguage +
     BASE_COUNTS.categories *
-    COEFFICIENTS.fontFamiliesPerCategory *
-    COEFFICIENTS.typefacesPerFamily *
-    COEFFICIENTS.alphabetsPerTypeface,
+      COEFFICIENTS.fontFamiliesPerCategory *
+      COEFFICIENTS.typefacesPerFamily *
+      COEFFICIENTS.alphabetsPerTypeface,
 } as const;
 export const categoryNames = [
   "Serif",
@@ -411,7 +422,6 @@ export const tables = [
   "Alphabet",
 ];
 
-init().catch(console.error);
 
 // seed.ts
 import { faker } from "@faker-js/faker";
@@ -471,6 +481,7 @@ class Seeder {
       await this.seedTypefaces();
       await this.seedAlphabets();
 
+      await this.updateAlphabetCounts();
       await this.updateCategoryCounts();
 
       await this.client.query("COMMIT");
@@ -859,42 +870,37 @@ class Seeder {
   private async seedAlphabets() {
     let created = 0;
 
+    const alphabetPairs = this.buildAlphabetPairs();
+
     const batchSize = 5000;
     let values: unknown[] = [];
     let placeholders: string[] = [];
 
-    for (const typeface of this.typefaces) {
-      const selectedLanguageIds = this.pickLanguagesForTypeface(
-        typeface.id,
-        COEFFICIENTS.alphabetsPerTypeface,
+    for (const [typefaceId, languageId] of alphabetPairs) {
+      const index = values.length;
+
+      placeholders.push(
+        `($${index + 1}, $${index + 2}, $${index + 3}, $${index + 4}, $${index + 5}, $${index + 6})`,
       );
 
-      for (const languageId of selectedLanguageIds) {
-        const index = values.length;
+      values.push(
+        0,
+        0,
+        this.makeVerificationDate(),
+        this.makeAlphabetStatus(),
+        typefaceId,
+        languageId,
+      );
 
-        placeholders.push(
-          `($${index + 1}, $${index + 2}, $${index + 3}, $${index + 4}, $${index + 5}, $${index + 6})`,
-        );
+      created++;
 
-        values.push(
-          this.makeTypefaceCountInSystem(),
-          this.makeSupportedFamilyCount(),
-          this.makeVerificationDate(),
-          this.makeAlphabetStatus(),
-          typeface.id,
-          languageId,
-        );
+      if (placeholders.length >= batchSize) {
+        await this.insertAlphabetBatch(placeholders, values);
+        values = [];
+        placeholders = [];
 
-        created++;
-
-        if (placeholders.length >= batchSize) {
-          await this.insertAlphabetBatch(placeholders, values);
-          values = [];
-          placeholders = [];
-
-          if (created % 50_000 === 0) {
-            console.log(`  Alphabet: ${created}/${COUNTS.alphabets}`);
-          }
+        if (created % 50_000 === 0) {
+          console.log(`  Alphabet: ${created}/${alphabetPairs.length}`);
         }
       }
     }
@@ -904,6 +910,115 @@ class Seeder {
     }
 
     console.log(`Alphabet: ${created}`);
+  }
+
+  private buildAlphabetPairs(): Array<[number, number]> {
+    const languagesPerTypeface = COEFFICIENTS.alphabetsPerTypeface;
+    const typefacesPerLanguage = COEFFICIENTS.alphabetsPerLanguage;
+
+    if (this.typefaces.length === 0) {
+      throw new Error("Cannot seed Alphabet: no typefaces");
+    }
+
+    if (this.languageIds.length === 0) {
+      throw new Error("Cannot seed Alphabet: no languages");
+    }
+
+    if (languagesPerTypeface > this.languageIds.length) {
+      throw new Error(
+        `Cannot seed Alphabet: alphabetsPerTypeface=${languagesPerTypeface}, but languages=${this.languageIds.length}`,
+      );
+    }
+
+    if (typefacesPerLanguage > this.typefaces.length) {
+      throw new Error(
+        `Cannot seed Alphabet: alphabetsPerLanguage=${typefacesPerLanguage}, but typefaces=${this.typefaces.length}`,
+      );
+    }
+
+    const totalAlphabetRows =
+      this.typefaces.length * languagesPerTypeface +
+      this.languageIds.length * typefacesPerLanguage;
+
+    if (totalAlphabetRows !== COUNTS.alphabets) {
+      console.warn(
+        `Alphabet target mismatch: generated ${totalAlphabetRows}, constants contain ${COUNTS.alphabets}`,
+      );
+    }
+
+    if (totalAlphabetRows > this.typefaces.length * this.languageIds.length) {
+      throw new Error(
+        `Cannot seed Alphabet: requested ${totalAlphabetRows} unique pairs, but maximum is ${
+          this.typefaces.length * this.languageIds.length
+        }`,
+      );
+    }
+
+    const pairs: Array<[number, number]> = [];
+    const usedPairs = new Set<string>();
+
+    const addPair = (typefaceId: number, languageId: number) => {
+      const key = `${typefaceId}:${languageId}`;
+
+      if (usedPairs.has(key)) {
+        throw new Error(
+          `Cannot seed Alphabet: duplicated pair typeface=${typefaceId}, language=${languageId}`,
+        );
+      }
+
+      usedPairs.add(key);
+      pairs.push([typefaceId, languageId]);
+    };
+
+    for (
+      let typefaceIndex = 0;
+      typefaceIndex < this.typefaces.length;
+      typefaceIndex++
+    ) {
+      const typeface = this.typefaces[typefaceIndex];
+
+      for (let offset = 0; offset < languagesPerTypeface; offset++) {
+        const languageIndex =
+          (typefaceIndex + offset) % this.languageIds.length;
+
+        const languageId = this.languageIds[languageIndex];
+
+        addPair(typeface.id, languageId);
+      }
+    }
+
+    for (
+      let languageIndex = 0;
+      languageIndex < this.languageIds.length;
+      languageIndex++
+    ) {
+      const languageId = this.languageIds[languageIndex];
+      const availableTypefaces = this.typefaces.filter(
+        (typeface) => !usedPairs.has(`${typeface.id}:${languageId}`),
+      );
+
+      if (typefacesPerLanguage > availableTypefaces.length) {
+        throw new Error(
+          `Cannot seed Alphabet: language ${languageId} has only ${availableTypefaces.length} available typefaces`,
+        );
+      }
+
+      for (let offset = 0; offset < typefacesPerLanguage; offset++) {
+        const typefaceIndex =
+          (languageIndex + offset) % availableTypefaces.length;
+        const typeface = availableTypefaces[typefaceIndex];
+
+        addPair(typeface.id, languageId);
+      }
+    }
+
+    if (pairs.length !== totalAlphabetRows) {
+      throw new Error(
+        `Cannot seed Alphabet: created ${pairs.length}/${totalAlphabetRows} rows`,
+      );
+    }
+
+    return pairs;
   }
 
   private async insertAlphabetBatch(placeholders: string[], values: unknown[]) {
@@ -925,6 +1040,27 @@ class Seeder {
     );
   }
 
+  private async updateAlphabetCounts() {
+    await this.client.query(`
+      UPDATE Alphabet a
+      SET
+        Typeface_count_in_system = stats.typeface_count,
+        Supported_family_count = stats.family_count
+      FROM (
+        SELECT
+          a2.id_Language,
+          COUNT(DISTINCT a2.id_Typeface) AS typeface_count,
+          COUNT(DISTINCT t.id_Font_family) AS family_count
+        FROM Alphabet a2
+        JOIN Typeface t ON t.id_Typeface = a2.id_Typeface
+        GROUP BY a2.id_Language
+      ) stats
+      WHERE stats.id_Language = a.id_Language
+    `);
+
+    console.log("Alphabet counts updated");
+  }
+
   private async updateCategoryCounts() {
     await this.client.query(`
       UPDATE Category
@@ -936,23 +1072,6 @@ class Seeder {
     `);
 
     console.log("Category counts updated");
-  }
-
-  private pickLanguagesForTypeface(
-    typefaceId: number,
-    count: number,
-  ): number[] {
-    const result: number[] = [];
-
-    const start = typefaceId % this.languageIds.length;
-
-    for (let i = 0; i < count; i++) {
-      const languageId =
-        this.languageIds[(start + i) % this.languageIds.length];
-      result.push(languageId);
-    }
-
-    return result;
   }
 
   private makeFontFamilyName(index: number): string {
@@ -969,20 +1088,6 @@ class Seeder {
 
   private makeTypefaceFamilyPrefix(fontFamilyId: number): string {
     return `Family ${fontFamilyId}`;
-  }
-
-  private makeTypefaceCountInSystem(): number {
-    return faker.number.int({
-      min: 1,
-      max: COEFFICIENTS.typefacesPerFamily,
-    });
-  }
-
-  private makeSupportedFamilyCount(): number {
-    return faker.number.int({
-      min: 1,
-      max: COEFFICIENTS.fontFamiliesPerCategory,
-    });
   }
 
   private makeVerificationDate(): string | null {
@@ -1033,6 +1138,7 @@ new Seeder().run().catch((error) => {
   console.error(error);
   process.exit(1);
 });
+
 
 
 \end{minted}
