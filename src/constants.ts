@@ -9,8 +9,8 @@ export const BASE_COUNTS = {
 export const COEFFICIENT_LIMITS = {
   fontFamiliesPerCategory: { min: 30, max: 35 },
   typefacesPerFamily: { min: 18, max: 22 },
-  alphabetsPerTypeface: { min: 37, max: 39 },
-  alphabetsPerLanguage: { min: 15, max: 25 },
+  languagesPerTypeface: { min: 1, max: 2 },
+  symbolsPerTypefaceLanguage: { min: 35, max: 45 },
 } as const;
 
 export const COEFFICIENTS = {
@@ -20,12 +20,12 @@ export const COEFFICIENTS = {
 
   typefacesPerFamily: faker.number.int(COEFFICIENT_LIMITS.typefacesPerFamily),
 
-  alphabetsPerTypeface: faker.number.int(
-    COEFFICIENT_LIMITS.alphabetsPerTypeface,
+  languagesPerTypeface: faker.number.int(
+    COEFFICIENT_LIMITS.languagesPerTypeface,
   ),
 
-  alphabetsPerLanguage: faker.number.int(
-    COEFFICIENT_LIMITS.alphabetsPerLanguage,
+  symbolsPerTypefaceLanguage: faker.number.int(
+    COEFFICIENT_LIMITS.symbolsPerTypefaceLanguage,
   ),
 } as const;
 
@@ -41,12 +41,12 @@ export const COUNTS = {
     COEFFICIENTS.fontFamiliesPerCategory *
     COEFFICIENTS.typefacesPerFamily,
 
-  alphabets:
-    BASE_COUNTS.languages * COEFFICIENTS.alphabetsPerLanguage +
+  symbols:
     BASE_COUNTS.categories *
       COEFFICIENTS.fontFamiliesPerCategory *
       COEFFICIENTS.typefacesPerFamily *
-      COEFFICIENTS.alphabetsPerTypeface,
+      COEFFICIENTS.languagesPerTypeface *
+      COEFFICIENTS.symbolsPerTypefaceLanguage,
 } as const;
 export const categoryNames = [
   "Serif",
@@ -373,13 +373,11 @@ export const weights = [
 
 export const slopes = ["Upright", "Italic", "Oblique"];
 
-export const alphabetStatuses = ["full", "partial", "unsupported"];
-
 export const tables = [
   "Category",
   "Format",
   "Language",
   "Font_family",
   "Typeface",
-  "Alphabet",
+  "Symbol",
 ];

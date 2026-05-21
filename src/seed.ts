@@ -10,7 +10,6 @@ import {
   languages,
   weights,
   slopes,
-  alphabetStatuses,
   tables,
 } from "./constants.js";
 import type { PoolClient } from "pg";
@@ -53,9 +52,8 @@ class Seeder {
 
       await this.seedFontFamilies();
       await this.seedTypefaces();
-      await this.seedAlphabets();
+      await this.seedSymbols();
 
-      await this.updateAlphabetCounts();
       await this.updateCategoryCounts();
 
       await this.client.query("COMMIT");
@@ -74,7 +72,7 @@ class Seeder {
   private async clearTables() {
     await this.client.query(`
       TRUNCATE TABLE
-        Alphabet,
+        Symbol,
         Typeface,
         Font_family,
         Language,
@@ -441,108 +439,90 @@ class Seeder {
     }
   }
 
-  private async seedAlphabets() {
+  private async seedSymbols() {
     let created = 0;
 
-    const alphabetPairs = this.buildAlphabetPairs();
+    const symbolRows = this.buildSymbolRows();
 
     const batchSize = 5000;
     let values: unknown[] = [];
     let placeholders: string[] = [];
 
-    for (const [typefaceId, languageId] of alphabetPairs) {
+    for (const row of symbolRows) {
       const index = values.length;
+      const symbol = this.makeSymbol(row.languageIndex, row.symbolOffset);
 
       placeholders.push(
-        `($${index + 1}, $${index + 2}, $${index + 3}, $${index + 4}, $${index + 5}, $${index + 6})`,
+        `($${index + 1}, $${index + 2}, $${index + 3}, $${index + 4})`,
       );
 
       values.push(
-        0,
-        0,
-        this.makeVerificationDate(),
-        this.makeAlphabetStatus(),
-        typefaceId,
-        languageId,
+        symbol.value,
+        symbol.unicodeCode,
+        row.typefaceId,
+        row.languageId,
       );
 
       created++;
 
       if (placeholders.length >= batchSize) {
-        await this.insertAlphabetBatch(placeholders, values);
+        await this.insertSymbolBatch(placeholders, values);
         values = [];
         placeholders = [];
 
         if (created % 50_000 === 0) {
-          console.log(`  Alphabet: ${created}/${alphabetPairs.length}`);
+          console.log(`  Symbol: ${created}/${symbolRows.length}`);
         }
       }
     }
 
     if (placeholders.length > 0) {
-      await this.insertAlphabetBatch(placeholders, values);
+      await this.insertSymbolBatch(placeholders, values);
     }
 
-    console.log(`Alphabet: ${created}`);
+    console.log(`Symbol: ${created}`);
   }
 
-  private buildAlphabetPairs(): Array<[number, number]> {
-    const languagesPerTypeface = COEFFICIENTS.alphabetsPerTypeface;
-    const typefacesPerLanguage = COEFFICIENTS.alphabetsPerLanguage;
+  private buildSymbolRows(): Array<{
+    typefaceId: number;
+    languageId: number;
+    languageIndex: number;
+    symbolOffset: number;
+  }> {
+    const languagesPerTypeface = COEFFICIENTS.languagesPerTypeface;
+    const symbolsPerTypefaceLanguage = COEFFICIENTS.symbolsPerTypefaceLanguage;
 
     if (this.typefaces.length === 0) {
-      throw new Error("Cannot seed Alphabet: no typefaces");
+      throw new Error("Cannot seed Symbol: no typefaces");
     }
 
     if (this.languageIds.length === 0) {
-      throw new Error("Cannot seed Alphabet: no languages");
+      throw new Error("Cannot seed Symbol: no languages");
     }
 
     if (languagesPerTypeface > this.languageIds.length) {
       throw new Error(
-        `Cannot seed Alphabet: alphabetsPerTypeface=${languagesPerTypeface}, but languages=${this.languageIds.length}`,
+        `Cannot seed Symbol: languagesPerTypeface=${languagesPerTypeface}, but languages=${this.languageIds.length}`,
       );
     }
 
-    if (typefacesPerLanguage > this.typefaces.length) {
-      throw new Error(
-        `Cannot seed Alphabet: alphabetsPerLanguage=${typefacesPerLanguage}, but typefaces=${this.typefaces.length}`,
-      );
-    }
+    const totalSymbolRows =
+      this.typefaces.length *
+      languagesPerTypeface *
+      symbolsPerTypefaceLanguage;
 
-    const totalAlphabetRows =
-      this.typefaces.length * languagesPerTypeface +
-      this.languageIds.length * typefacesPerLanguage;
-
-    if (totalAlphabetRows !== COUNTS.alphabets) {
+    if (totalSymbolRows !== COUNTS.symbols) {
       console.warn(
-        `Alphabet target mismatch: generated ${totalAlphabetRows}, constants contain ${COUNTS.alphabets}`,
+        `Symbol target mismatch: generated ${totalSymbolRows}, constants contain ${COUNTS.symbols}`,
       );
     }
 
-    if (totalAlphabetRows > this.typefaces.length * this.languageIds.length) {
-      throw new Error(
-        `Cannot seed Alphabet: requested ${totalAlphabetRows} unique pairs, but maximum is ${
-          this.typefaces.length * this.languageIds.length
-        }`,
-      );
-    }
-
-    const pairs: Array<[number, number]> = [];
-    const usedPairs = new Set<string>();
-
-    const addPair = (typefaceId: number, languageId: number) => {
-      const key = `${typefaceId}:${languageId}`;
-
-      if (usedPairs.has(key)) {
-        throw new Error(
-          `Cannot seed Alphabet: duplicated pair typeface=${typefaceId}, language=${languageId}`,
-        );
-      }
-
-      usedPairs.add(key);
-      pairs.push([typefaceId, languageId]);
-    };
+    const rows: Array<{
+      typefaceId: number;
+      languageId: number;
+      languageIndex: number;
+      symbolOffset: number;
+    }> = [];
 
     for (
       let typefaceIndex = 0;
@@ -557,53 +537,37 @@ class Seeder {
 
         const languageId = this.languageIds[languageIndex];
 
-        addPair(typeface.id, languageId);
+        for (
+          let symbolOffset = 0;
+          symbolOffset < symbolsPerTypefaceLanguage;
+          symbolOffset++
+        ) {
+          rows.push({
+            typefaceId: typeface.id,
+            languageId,
+            languageIndex,
+            symbolOffset,
+          });
+        }
       }
     }
 
-    for (
-      let languageIndex = 0;
-      languageIndex < this.languageIds.length;
-      languageIndex++
-    ) {
-      const languageId = this.languageIds[languageIndex];
-      const availableTypefaces = this.typefaces.filter(
-        (typeface) => !usedPairs.has(`${typeface.id}:${languageId}`),
-      );
-
-      if (typefacesPerLanguage > availableTypefaces.length) {
-        throw new Error(
-          `Cannot seed Alphabet: language ${languageId} has only ${availableTypefaces.length} available typefaces`,
-        );
-      }
-
-      for (let offset = 0; offset < typefacesPerLanguage; offset++) {
-        const typefaceIndex =
-          (languageIndex + offset) % availableTypefaces.length;
-        const typeface = availableTypefaces[typefaceIndex];
-
-        addPair(typeface.id, languageId);
-      }
-    }
-
-    if (pairs.length !== totalAlphabetRows) {
+    if (rows.length !== totalSymbolRows) {
       throw new Error(
-        `Cannot seed Alphabet: created ${pairs.length}/${totalAlphabetRows} rows`,
+        `Cannot seed Symbol: created ${rows.length}/${totalSymbolRows} rows`,
       );
     }
 
-    return pairs;
+    return rows;
   }
 
-  private async insertAlphabetBatch(placeholders: string[], values: unknown[]) {
+  private async insertSymbolBatch(placeholders: string[], values: unknown[]) {
     await this.client.query(
       `
-      INSERT INTO Alphabet
+      INSERT INTO Symbol
         (
-          Typeface_count_in_system,
-          Supported_family_count,
-          Verification_date,
-          Status,
+          Value,
+          Unicode_code,
           id_Typeface,
           id_Language
         )
@@ -612,27 +576,6 @@ class Seeder {
       `,
       values,
     );
-  }
-
-  private async updateAlphabetCounts() {
-    await this.client.query(`
-      UPDATE Alphabet a
-      SET
-        Typeface_count_in_system = stats.typeface_count,
-        Supported_family_count = stats.family_count
-      FROM (
-        SELECT
-          a2.id_Language,
-          COUNT(DISTINCT a2.id_Typeface) AS typeface_count,
-          COUNT(DISTINCT t.id_Font_family) AS family_count
-        FROM Alphabet a2
-        JOIN Typeface t ON t.id_Typeface = a2.id_Typeface
-        GROUP BY a2.id_Language
-      ) stats
-      WHERE stats.id_Language = a.id_Language
-    `);
-
-    console.log("Alphabet counts updated");
   }
 
   private async updateCategoryCounts() {
@@ -664,17 +607,14 @@ class Seeder {
     return `Family ${fontFamilyId}`;
   }
 
-  private makeVerificationDate(): string | null {
-    return (
-      faker.helpers.maybe(
-        () => faker.date.past({ years: 2 }).toISOString().split("T")[0],
-        { probability: 0.7 },
-      ) ?? null
-    );
-  }
+  private makeSymbol(languageIndex: number, symbolOffset: number) {
+    const codePoint = 0x0100 + languageIndex * 64 + symbolOffset;
+    const value = String.fromCodePoint(codePoint);
 
-  private makeAlphabetStatus(): string {
-    return faker.helpers.arrayElement(alphabetStatuses);
+    return {
+      value,
+      unicodeCode: `U+${codePoint.toString(16).toUpperCase().padStart(4, "0")}`,
+    };
   }
 
   private getRequiredId(map: IdMap, key: string, tableName: string): number {

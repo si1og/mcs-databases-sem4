@@ -145,12 +145,10 @@
 }
 
 \dbtable{alph}{20em,-36em}{
-    \SetCell[c=2]{c} Алфавит & \\
-    PK & \tm{alph_pk}{id\_Алфавит} \\
-       & Число\_начерт\_в\_системе \\
-       & Число\_поддерж\_гарнитур \\
-       & Дата\_проверки \\
-       & Статус \\
+    \SetCell[c=2]{c} Символ & \\
+    PK & \tm{alph_pk}{id\_Символ} \\
+       & Значение \\
+       & Код\_Unicode \\
     FK & \tm{alph_fk_tf}{id\_Начертание} \\
     FK & \tm{alph_fk_lang}{id\_Язык} \\
 }
@@ -287,7 +285,7 @@
     |- ([xshift={-\hgap + \xWestShift}]fmt_pk.west)
     -- node[crd, above] {1} ([xshift=\xWestShift]fmt_pk.west);
 
-% Начертание.id_Начертание → Алфавит.id_Начертание
+% Начертание.id_Начертание → Символ.id_Начертание
 \draw[lnk] ([xshift=\xWestShift, yshift=.4em]tf_pk.west) -- ++(-\hgap*2,0) node[crd, above] {1}
     |- ++(0, -13.2em) |- ++(-6em, 0)
     |- node[crd, pos=0.75, above] {$\infty$} ([xshift=\xWestShift]alph_fk_tf.west);
@@ -297,7 +295,7 @@
     |- ++(0, -12.5em) |- ++(14.5em, 0)
     |- node[crd, pos=0.75, above] {$\infty$} ([xshift=\xWestShift]inst_fk_tf.west);
 
-% Алфавит.id_Язык → Язык.id_Язык
+% Символ.id_Язык → Язык.id_Язык
 \draw[lnk] ([xshift=\xWestShift]alph_fk_lang.west) -- ++(-\hgap,0) node[crd, above] {$\infty$}
     |- ([xshift={\hgap + \xEastShift}]lang_pk.west)
     |- node[crd, above] {1} ([xshift=\xEastShift]lang_pk.west);
@@ -390,7 +388,6 @@
 
 \node[ann, above=0.3em of d_country] {1; --; --};
 \node[ann, above=0.3em of d_lictype] {1; --; --};
-\node[ann, above=0.3em of d_iso] {1; --; --};
 \node[ann, above=0.3em of d_wd] {1; --; --};
 \node[ann, above=0.3em of d_st] {1; --; --};
 \node[ann, above=0.3em of d_weight] {1; --; --};

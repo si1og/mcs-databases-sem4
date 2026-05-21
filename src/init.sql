@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS Alphabet CASCADE;
+DROP TABLE IF EXISTS Symbol CASCADE;
 
 DROP TABLE IF EXISTS Typeface CASCADE;
 
@@ -91,14 +91,13 @@ CREATE TABLE Typeface (
     id_Format INT NOT NULL REFERENCES Format(id_Format)
 );
 
-CREATE TABLE Alphabet (
-    id_Alphabet SERIAL PRIMARY KEY,
-    Typeface_count_in_system INT NOT NULL DEFAULT 0,
-    Supported_family_count INT NOT NULL DEFAULT 0,
-    Verification_date DATE,
-    Status VARCHAR(30) NOT NULL,
+CREATE TABLE Symbol (
+    id_Symbol SERIAL PRIMARY KEY,
+    Value VARCHAR(8) NOT NULL,
+    Unicode_code VARCHAR(10) NOT NULL,
     id_Typeface INT NOT NULL REFERENCES Typeface(id_Typeface),
     id_Language INT NOT NULL REFERENCES Language(id_Language),
 
-    CONSTRAINT uq_alphabet_typeface_language UNIQUE (id_Typeface, id_Language)
+    CONSTRAINT uq_symbol_value_typeface_language
+        UNIQUE (Value, id_Typeface, id_Language)
 );

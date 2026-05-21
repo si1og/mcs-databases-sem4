@@ -100,15 +100,15 @@
     edge node[left] {1} (nach);
 
 % ПОДДЕРЖКА ЯЗЫКА
-\node[entity] (podder) [below=8em of obl] {Алфавит};
+\node[entity] (podder) [below=8em of obl] {Символ};
 \draw[link] (obl) -- node[left] {N} (podder);
-\node[derived attribute] (pl2) [above left of=podder] {Число начертаний в системе} edge (podder);
-\node[derived attribute] (pl3) [below left of=podder] {Число поддерж. гарнитур} edge (podder);
-\node[attribute] (pl4) [below of=podder] {Дата проверки} edge (podder);
-\node[attribute] (pl5) [below right of=podder] {Статус} edge (podder);
+\node[attribute] (pl2) [above left of=podder] {Значение} edge (podder);
+\node[attribute] (pl3) [below left of=podder] {Код Unicode} edge (podder);
+\node[derived attribute] (pl4) [above right of=podder] {Число начертаний} edge (podder);
+\node[derived attribute] (pl5) [below right of=podder] {Число языков} edge (podder);
 
 % поддерживает
-\node[relationship] (r_pod1) [left=12em of podder] {Охватывает}
+\node[relationship] (r_pod1) [left=12em of podder] {Относится}
     edge node[left] {N} (podder);
 
 
@@ -174,8 +174,8 @@
         \item Издательство выдаёт лицензию.
         \item Гарнитура классифицируется по категории.
         \item Гарнитура включает начертание.
-        \item Начертание сожерит алфавит.
-        \item Алфавит охватывает язык.
+        \item Начертание поддерживает символ.
+        \item Символ относится к языку.
         \item Начертание участвует в установке.
         \item Установка производится на рабочей станции.
         \item На рабочую станцию установлена операционная система.

@@ -122,12 +122,10 @@
 }
 
 \dbtable{alph}{2em,10em}{
-    \SetCell[c=2]{c} Алфавит & \\
-    PK & \tm{alph_pk}{id\_Алфавит} \\
-       & Число\_начерт\_в\_системе \\
-       & Число\_поддерж\_гарнитур \\
-       & Дата\_проверки \\
-       & Статус \\
+    \SetCell[c=2]{c} Символ & \\
+    PK & \tm{alph_pk}{id\_Символ} \\
+       & Значение \\
+       & Код\_Unicode \\
     FK & \tm{alph_fk_tf}{id\_Начертание} \\
     FK & \tm{alph_fk_lang}{id\_Язык} \\
 }
@@ -171,6 +169,7 @@
 % Гарнитура.id_Категория → Категория.id_Категория
 \draw[lnk] ([xshift=\xEastShift]ff_fk_cat.west)
     -- ++(\hgap,0) node[crd, above] {$\infty$}
+    node[ann, below] {30--35}
     |- ++(\oneRowTablesLinkMargin,0)
     |- ([xshift={-\hgap + \xWestShift}]cat_pk.west)
     -- node[crd, above] {1} ([xshift=\xWestShift]cat_pk.west);
@@ -180,7 +179,9 @@
     -- ++(-2.2em,0) node[crd, above] {1}
     |- ++(-42em,6em)
     |- ([xshift={-\hgap + \xWestShift}]tf_fk_ff.west)
-    -- node[crd, above] {$\infty$} ([xshift=\xWestShift]tf_fk_ff.west);
+    -- node[crd, above] {$\infty$}
+    node[ann, below] {18--22}
+    ([xshift=\xWestShift]tf_fk_ff.west);
 
 % Начертание.id_Формат → Формат.id_Формат
 \draw[lnk] ([xshift=\xEastShift]tf_fk_fmt.west)
@@ -189,15 +190,17 @@
     |- ([xshift={-\hgap + \xWestShift}]fmt_pk.west)
     -- node[crd, above] {1} ([xshift=\xWestShift]fmt_pk.west);
 
-% Алфавит.id_Начертание → Начертание.id_Начертание
+% Символ.id_Начертание → Начертание.id_Начертание
 \draw[lnk] ([xshift=\xEastShift]alph_fk_tf.west)
     -- ++(\hgap,0) node[crd, above] {$\infty$}
+    node[ann, below] {1--2 языка на начерт.}
     |- ([xshift={-\hgap + \xWestShift}]tf_pk.west)
     -- node[crd, above] {1} ([xshift=\xWestShift]tf_pk.west);
 
-% Алфавит.id_Язык → Язык.id_Язык
+% Символ.id_Язык → Язык.id_Язык
 \draw[lnk] ([xshift=\xWestShift]alph_fk_lang.west)
     -- ++(-\hgap,0) node[crd, above] {$\infty$}
+    node[ann, below] {35--45 символов на пару}
     |- ([xshift=\xWestShift]lang_pk.west)
     -- node[crd, above] {1} ([xshift=\xWestShift]lang_pk.west);
 
@@ -254,9 +257,9 @@
 \node[ann, above=0.3em of lang] {2; --; 40};
 
 % Производные таблицы
-\node[ann, above=0.3em of ff] {2; 30--35; 396};
-\node[ann, above=0.3em of tf] {3; 18--22; 8712};
-\node[ann, above=0.3em of alph] {4; 37--39 + 15--25; 331976};
+\node[ann, above=0.3em of ff] {2; 408};
+\node[ann, above=0.3em of tf] {3; 8160};
+\node[ann, above=0.3em of alph] {4; 326400};
 
 \end{tikzpicture}
 \caption{Программируемая схема базы данных}

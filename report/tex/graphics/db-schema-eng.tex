@@ -145,12 +145,10 @@
 }
 
 \dbtable{alph}{20em,-36em}{
-    \SetCell[c=2]{c} Alphabet & \\
-    PK & \tm{alph_pk}{id\_Alphabet} \\
-       & Typeface\_count\_in\_system \\
-       & Supported\_family\_count \\
-       & Verification\_date \\
-       & Status \\
+    \SetCell[c=2]{c} Symbol & \\
+    PK & \tm{alph_pk}{id\_Symbol} \\
+       & Value \\
+       & Unicode\_code \\
     FK & \tm{alph_fk_tf}{id\_Typeface} \\
     FK & \tm{alph_fk_lang}{id\_Language} \\
 }
@@ -286,7 +284,7 @@
     |- ([xshift={-\hgap + \xWestShift}]fmt_pk.west)
     -- node[crd, above] {1} ([xshift=\xWestShift]fmt_pk.west);
 
-% Typeface.id_Typeface -> Alphabet.id_Typeface
+% Typeface.id_Typeface -> Symbol.id_Typeface
 \draw[lnk] ([xshift=\xWestShift, yshift=.4em]tf_pk.west) -- ++(-\hgap*2,0) node[crd, above] {1}
     |- ++(0, -13.2em) |- ++(-6em, 0)
     |- node[crd, pos=0.75, above] {$\infty$} ([xshift=\xWestShift]alph_fk_tf.west);
@@ -296,7 +294,7 @@
     |- ++(0, -12.5em) |- ++(14.5em, 0)
     |- node[crd, pos=0.75, above] {$\infty$} ([xshift=\xWestShift]inst_fk_tf.west);
 
-% Alphabet.id_Language -> Language.id_Language
+% Symbol.id_Language -> Language.id_Language
 \draw[lnk] ([xshift=\xWestShift]alph_fk_lang.west) -- ++(-\hgap,0) node[crd, above] {$\infty$}
     |- ([xshift={\hgap + \xEastShift}]lang_pk.west)
     |- node[crd, above] {1} ([xshift=\xEastShift]lang_pk.west);
