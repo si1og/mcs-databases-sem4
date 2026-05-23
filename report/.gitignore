@@ -6,3 +6,5 @@
 *.fls
 *.synctex.gz
 _minted
+histograms/.cache
+histograms/.matplotlib-cache

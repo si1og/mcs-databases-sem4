@@ -1,5 +1,3 @@
-import { faker } from "@faker-js/faker";
-
 export const BASE_COUNTS = {
   categories: 12,
   formats: 5,
@@ -11,42 +9,6 @@ export const COEFFICIENT_LIMITS = {
   typefacesPerFamily: { min: 18, max: 22 },
   languagesPerTypeface: { min: 2, max: 5 },
   symbolsPerTypefaceLanguage: { min: 33, max: 45 },
-} as const;
-
-export const COEFFICIENTS = {
-  fontFamiliesPerCategory: faker.number.int(
-    COEFFICIENT_LIMITS.fontFamiliesPerCategory,
-  ),
-
-  typefacesPerFamily: faker.number.int(COEFFICIENT_LIMITS.typefacesPerFamily),
-
-  languagesPerTypeface: faker.number.int(
-    COEFFICIENT_LIMITS.languagesPerTypeface,
-  ),
-
-  symbolsPerTypefaceLanguage: faker.number.int(
-    COEFFICIENT_LIMITS.symbolsPerTypefaceLanguage,
-  ),
-} as const;
-
-export const COUNTS = {
-  categories: BASE_COUNTS.categories,
-  formats: BASE_COUNTS.formats,
-  languages: BASE_COUNTS.languages,
-
-  fontFamilies: BASE_COUNTS.categories * COEFFICIENTS.fontFamiliesPerCategory,
-
-  typefaces:
-    BASE_COUNTS.categories *
-    COEFFICIENTS.fontFamiliesPerCategory *
-    COEFFICIENTS.typefacesPerFamily,
-
-  symbols:
-    BASE_COUNTS.categories *
-      COEFFICIENTS.fontFamiliesPerCategory *
-      COEFFICIENTS.typefacesPerFamily *
-      COEFFICIENTS.languagesPerTypeface *
-      COEFFICIENTS.symbolsPerTypefaceLanguage,
 } as const;
 export const categoryNames = [
   "Serif",

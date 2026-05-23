@@ -122,10 +122,12 @@
 }
 
 \dbtable{alph}{2em,10em}{
-    \SetCell[c=2]{c} Symbol & \\
-    PK & \tm{alph_pk}{id\_Symbol} \\
-       & Value \\
-       & Unicode\_code \\
+    \SetCell[c=2]{c} Alphabet & \\
+    PK & \tm{alph_pk}{id\_Alphabet} \\
+       & Typeface\_count\_in\_system \\
+       & Supported\_family\_count \\
+       & Verification\_date \\
+       & Status \\
     FK & \tm{alph_fk_tf}{id\_Typeface} \\
     FK & \tm{alph_fk_lang}{id\_Language} \\
 }
@@ -167,7 +169,6 @@
 % Font_family.id_Category -> Category.id_Category
 \draw[lnk] ([xshift=\xEastShift]ff_fk_cat.west)
     -- ++(\hgap,0) node[crd, above] {$\infty$}
-    node[ann, below] {15--20}
     |- ++(\oneRowTablesLinkMargin,0)
     |- ([xshift={-\hgap + \xWestShift}]cat_pk.west)
     -- node[crd, above] {1} ([xshift=\xWestShift]cat_pk.west);
@@ -177,9 +178,7 @@
     -- ++(-2.2em,0) node[crd, above] {1}
     |- ++(-42em,6em)
     |- ([xshift={-\hgap + \xWestShift}]tf_fk_ff.west)
-    -- node[crd, above] {$\infty$}
-    node[ann, below] {18--22}
-    ([xshift=\xWestShift]tf_fk_ff.west);
+    -- node[crd, above] {$\infty$} ([xshift=\xWestShift]tf_fk_ff.west);
 
 % Typeface.id_Format -> Format.id_Format
 \draw[lnk] ([xshift=\xEastShift]tf_fk_fmt.west)
@@ -187,18 +186,21 @@
     |- ++(5em,0)
     |- ([xshift={-\hgap + \xWestShift}]fmt_pk.west)
     -- node[crd, above] {1} ([xshift=\xWestShift]fmt_pk.west);
+    git config --global gpg.format ssh
+    git config --global user.signingkey ~/.ssh/id_ed25519_signing.pub
+    git config --global commit.gpgsign true
+    git commit --allow-empty -S -m "test signed commit"
+    git log --show-signature -1
 
-% Symbol.id_Typeface -> Typeface.id_Typeface
+% Alphabet.id_Typeface -> Typeface.id_Typeface
 \draw[lnk] ([xshift=\xEastShift]alph_fk_tf.west)
     -- ++(\hgap,0) node[crd, above] {$\infty$}
-    node[ann, below] {2--5 languages/typeface}
     |- ([xshift={-\hgap + \xWestShift}]tf_pk.west)
     -- node[crd, above] {1} ([xshift=\xWestShift]tf_pk.west);
 
-% Symbol.id_Language -> Language.id_Language
+% Alphabet.id_Language -> Language.id_Language
 \draw[lnk] ([xshift=\xWestShift]alph_fk_lang.west)
     -- ++(-\hgap,0) node[crd, above] {$\infty$}
-    node[ann, below] {33--45 letters/pair}
     |- ([xshift=\xWestShift]lang_pk.west)
     -- node[crd, above] {1} ([xshift=\xWestShift]lang_pk.west);
 
@@ -255,9 +257,9 @@
 \node[ann, above=0.3em of lang] {2; --; 40};
 
 % Derived tables
-\node[ann, above=0.3em of ff] {2; 240};
-\node[ann, above=0.3em of tf] {3; 5280};
-\node[ann, above=0.3em of alph] {4; 390720};
+\node[ann, above=0.3em of ff] {2; 30--35; 396};
+\node[ann, above=0.3em of tf] {3; 18--22; 8712};
+\node[ann, above=0.3em of alph] {4; 37--39 + 15--25; 331976};
 
 \end{tikzpicture}
 \caption{Программируемая схема базы данных на английском языке}

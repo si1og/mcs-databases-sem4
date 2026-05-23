@@ -1,1 +1,197 @@
 \section{Программирование}
+
+\subsection{Заполнение базы данных}
+
+Создание таблиц базы данных выполняется SQL-скриптом, приведённым в приложении~\ref{app:init-sql}. Заполнение базы данных выполняется программой на Node.js и TypeScript, исходный код которой приведён в приложении~\ref{app:seed-ts}. При заполнении сначала создаются справочные таблицы, затем таблицы предметной области, зависящие от них по внешним ключам.
+
+В результате выполнения программы заполнения были получены количества записей, приведённые в таблице~\ref{table:programming-counts}.
+
+\begin{table}[H]
+    \centering
+    \caption{Количество записей в таблицах базы данных}
+    \label{table:programming-counts}
+    \begin{tblr}{
+        colspec = {|X[l]|X[r]|},
+        row{1} = {font=\bfseries},
+        row{13} = {font=\bfseries},
+        hlines,
+        vlines,
+    }
+        Название таблицы & Количество записей \\
+        \mintinline{text}{Category} & 12 \\
+        \mintinline{text}{Weight} & 9 \\
+        \mintinline{text}{Slope} & 3 \\
+        \mintinline{text}{Extension} & 5 \\
+        \mintinline{text}{Writing_direction} & 2 \\
+        \mintinline{text}{Script_type} & 3 \\
+        \mintinline{text}{Format} & 5 \\
+        \mintinline{text}{Language} & 40 \\
+        \mintinline{text}{Font_family} & 210 \\
+        \mintinline{text}{Typeface} & 4217 \\
+        \mintinline{text}{Symbol} & 581014 \\
+        Всего записей в БД & 585498 \\
+    \end{tblr}
+\end{table}
+
+\subsection{Запросы}
+
+Для проверки работы базы данных были составлены SQL-запросы, соответствующие основным пользовательским операциям. Тексты запросов хранятся в отдельных SQL-файлах в каталоге \mintinline{text}{src/queries}. Для построения визуализаций планов выполнения используется сервис Dalibo Explain\footnote{\url{https://explain.dalibo.com/}}: в него можно загрузить результат выполнения команды \mintinline{sql}{EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)} для нужного запроса.
+
+В формулах далее используются обозначения: $C$ --- \mintinline{text}{Category}, $FF$ --- \mintinline{text}{Font_family}, $T$ --- \mintinline{text}{Typeface}, $F$ --- \mintinline{text}{Format}, $L$ --- \mintinline{text}{Language}, $S$ --- \mintinline{text}{Symbol}, $W$ --- \mintinline{text}{Weight}. Символ $\bowtie$ обозначает соединение таблиц по соответствующим внешним ключам, $\sigma$ --- выборку, $\pi$ --- проекцию, $\gamma$ --- группировку с агрегированием.
+
+\subsubsection{Запрос 1}
+
+Найти начертания, относящиеся к категории $A$, у которых присутствует символ $B$, поддерживаемый начертанием $C$ для того же языка.
+
+\[
+\begin{aligned}
+Q_C &= \sigma_{T_C.name=C \land S_C.value=B}(T_C \bowtie S_C),\\
+R_1 &= \pi_{T.id, T.name}\ 
+\sigma_{\substack{C.name=A \land S.value=B\\ S.id\_Language=S_C.id\_Language}}
+(T \bowtie FF \bowtie C \bowtie S \bowtie Q_C).
+\end{aligned}
+\]
+
+\captionof{listing}{Запрос 1}
+\vspace{-10pt}
+\inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_01.sql}
+
+\screenshot[0.65]{img/query-01-result.png}{Результат выполнения запроса 1}
+
+\subsubsection{Запрос 2}
+
+Посчитать число языков, в которых присутствует формат $A$ и которые относятся к категории $C$.
+
+\[
+R_2 =
+\gamma_{\operatorname{count\_distinct}(L.id)}
+\left(
+    \sigma_{F.name=A \land C.name=C}
+    (L \bowtie S \bowtie T \bowtie F \bowtie FF \bowtie C)
+\right)
+\]
+
+\captionof{listing}{Запрос 2}
+\vspace{-10pt}
+\inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_02.sql}
+
+\screenshot[0.55]{img/query-02-result.png}{Результат выполнения запроса 2}
+
+\subsubsection{Запрос 3}
+
+Для каждого формата посчитать число начертаний и число символов алфавита. Полученные пары значений используются для построения двумерной гистограммы.
+
+\[
+R_3 =
+\gamma_{F.id,F.name;\ \operatorname{count\_distinct}(T.id),\operatorname{count}(S.id)}
+(F \bowtie T \bowtie S)
+\]
+
+\captionof{listing}{Запрос 3}
+\vspace{-10pt}
+\inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_03.sql}
+
+\screenshot[0.75]{img/query-03-result.png}{Результат выполнения запроса 3}
+
+\screenshot[0.75]{histograms/query-03-histogram.png}{Двумерная гистограмма по результатам запроса 3}
+
+\subsubsection{Запрос 4}
+
+Посчитать число начертаний с одинаковым числом символов. Полученные пары значений используются для построения двумерной гистограммы.
+
+\[
+\begin{aligned}
+Q &= \gamma_{T.id;\ \operatorname{count}(S.id) \rightarrow symbol\_count}(T \bowtie S),\\
+R_4 &= \gamma_{symbol\_count;\ \operatorname{count}(T.id) \rightarrow typeface\_count}(Q).
+\end{aligned}
+\]
+
+\captionof{listing}{Запрос 4}
+\vspace{-10pt}
+\inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_04.sql}
+
+\screenshot[0.8]{histograms/query-04-histogram.png}{Двумерная гистограмма по результатам запроса 4}
+
+\subsubsection{Запрос 5}
+
+Найти символы, поддерживаемые наибольшим и наименьшим числом гарнитур. Для символа число гарнитур вычисляется через начертания, в которых этот символ присутствует. При большом числе совпадающих значений в результат выводятся первые 10 строк для каждой границы.
+
+\[
+\begin{aligned}
+Q &= \gamma_{S.value,S.unicode\_code;\ \operatorname{count\_distinct}(FF.id) \rightarrow family\_count}
+(S \bowtie T \bowtie FF),\\
+R_5 &= \sigma_{family\_count=\max(Q.family\_count) \lor family\_count=\min(Q.family\_count)}(Q).
+\end{aligned}
+\]
+
+\captionof{listing}{Запрос 5}
+\vspace{-10pt}
+\inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_05.sql}
+
+\screenshot[0.7]{img/query-05-result.png}{Результат выполнения запроса 5}
+
+\subsubsection{Запрос 6}
+
+Найти языки, в которых отсутствует насыщенность $A$.
+
+\[
+R_6 =
+\pi_{L.id,L.name}(L) -
+\pi_{L.id,L.name}\left(\sigma_{W.name=A}(L \bowtie S \bowtie T \bowtie W)\right)
+\]
+
+\captionof{listing}{Запрос 6}
+\vspace{-10pt}
+\inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_06.sql}
+
+\screenshot[0.6]{img/query-06-result.png}{Результат выполнения запроса 6}
+
+\subsubsection{Запрос 7}
+
+Найти форматы, в которых больше начертаний, чем в формате $A$.
+
+\[
+\begin{aligned}
+Q &= \gamma_{F.id,F.name;\ \operatorname{count}(T.id) \rightarrow typeface\_count}(F \bowtie T),\\
+R_7 &= \sigma_{Q.typeface\_count > Q_A.typeface\_count}(Q \times \sigma_{name=A}(Q)).
+\end{aligned}
+\]
+
+\captionof{listing}{Запрос 7}
+\vspace{-10pt}
+\inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_07.sql}
+
+\screenshot[0.6]{img/query-07-result.png}{Результат выполнения запроса 7}
+
+\subsubsection{Запрос 8}
+
+Для каждой категории и каждого языка посчитать число символов. Для вывода используются первые 10 языков; результат предназначен для построения двумерной гистограммы.
+
+\[
+R_8 =
+\gamma_{C.id,C.name,L.id,L.name;\ \operatorname{count}(S.id)}
+(C \bowtie FF \bowtie T \bowtie S \bowtie L_{1..10})
+\]
+
+\captionof{listing}{Запрос 8}
+\vspace{-10pt}
+\inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_08.sql}
+
+\screenshot[0.9]{histograms/query-08-histogram.png}{Двумерная гистограмма по результатам запроса 8}
+
+\subsubsection{Запрос 9}
+
+Для начертания $A$ и гарнитуры $B$ поменять формат с $C$ на $D$.
+
+\[
+R_9 =
+\operatorname{update}_{T.id\_Format=D}
+\left(
+    \sigma_{T.name=A \land FF.name=B \land F.name=C}
+    (T \bowtie FF \bowtie F)
+\right)
+\]
+
+\captionof{listing}{Запрос 9}
+\vspace{-10pt}
+\inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_09.sql}

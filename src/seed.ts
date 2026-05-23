@@ -2,8 +2,7 @@ import { faker } from "@faker-js/faker";
 import { pool } from "./db.js";
 import {
   BASE_COUNTS,
-  COEFFICIENTS,
-  COUNTS,
+  COEFFICIENT_LIMITS,
   categoryNames,
   categoryDescs,
   formats,
@@ -28,6 +27,7 @@ class Seeder {
   private formatIds: number[] = [];
   private languageIds: number[] = [];
   private fontFamilyIds: number[] = [];
+  private fontFamilyTypefaceCounts: Map<number, number> = new Map();
   private typefaces: TypefaceRow[] = [];
 
   private weightIds: IdMap = new Map();
@@ -290,8 +290,15 @@ class Seeder {
     let placeholders: string[] = [];
 
     for (const categoryId of this.categoryIds) {
-      for (let i = 0; i < COEFFICIENTS.fontFamiliesPerCategory; i++) {
+      const fontFamiliesPerCategory = faker.number.int(
+        COEFFICIENT_LIMITS.fontFamiliesPerCategory,
+      );
+
+      for (let i = 0; i < fontFamiliesPerCategory; i++) {
         const index = values.length;
+        const typefacesPerFamily = faker.number.int(
+          COEFFICIENT_LIMITS.typefacesPerFamily,
+        );
 
         placeholders.push(
           `($${index + 1}, $${index + 2}, $${index + 3}, $${index + 4}, $${index + 5})`,
@@ -301,7 +308,7 @@ class Seeder {
           this.makeFontFamilyName(created),
           faker.number.int({ min: 1950, max: 2024 }),
           faker.lorem.sentence(),
-          COEFFICIENTS.typefacesPerFamily,
+          typefacesPerFamily,
           categoryId,
         );
 
@@ -342,13 +349,17 @@ class Seeder {
         )
       VALUES
         ${placeholders.join(", ")}
-      RETURNING id_Font_family
+      RETURNING id_Font_family, Typeface_count
       `,
       values,
     );
 
     for (const row of result.rows) {
       this.fontFamilyIds.push(row.id_font_family);
+      this.fontFamilyTypefaceCounts.set(
+        row.id_font_family,
+        row.typeface_count,
+      );
     }
   }
 
@@ -361,8 +372,13 @@ class Seeder {
 
     for (const fontFamilyId of this.fontFamilyIds) {
       const familyName = this.makeTypefaceFamilyPrefix(fontFamilyId);
+      const typefacesPerFamily = this.fontFamilyTypefaceCounts.get(fontFamilyId);
 
-      for (let i = 0; i < COEFFICIENTS.typefacesPerFamily; i++) {
+      if (typefacesPerFamily === undefined) {
+        throw new Error(`Missing typeface count for font family ${fontFamilyId}`);
+      }
+
+      for (let i = 0; i < typefacesPerFamily; i++) {
         const weight = weights[i % weights.length];
         const slope = slopes[i % slopes.length];
 
@@ -399,7 +415,7 @@ class Seeder {
           placeholders = [];
 
           if (created % 5000 === 0) {
-            console.log(`  Typeface: ${created}/${COUNTS.typefaces}`);
+            console.log(`  Typeface: ${created}`);
           }
         }
       }
@@ -489,9 +505,6 @@ class Seeder {
     languageIndex: number;
     symbolOffset: number;
   }> {
-    const languagesPerTypeface = COEFFICIENTS.languagesPerTypeface;
-    const symbolsPerTypefaceLanguage = COEFFICIENTS.symbolsPerTypefaceLanguage;
-
     if (this.typefaces.length === 0) {
       throw new Error("Cannot seed Symbol: no typefaces");
     }
@@ -500,20 +513,9 @@ class Seeder {
       throw new Error("Cannot seed Symbol: no languages");
     }
 
-    if (languagesPerTypeface > this.languageIds.length) {
+    if (COEFFICIENT_LIMITS.languagesPerTypeface.max > this.languageIds.length) {
       throw new Error(
-        `Cannot seed Symbol: languagesPerTypeface=${languagesPerTypeface}, but languages=${this.languageIds.length}`,
-      );
-    }
-
-    const totalSymbolRows =
-      this.typefaces.length *
-      languagesPerTypeface *
-      symbolsPerTypefaceLanguage;
-
-    if (totalSymbolRows !== COUNTS.symbols) {
-      console.warn(
-        `Symbol target mismatch: generated ${totalSymbolRows}, constants contain ${COUNTS.symbols}`,
+        `Cannot seed Symbol: languagesPerTypeface max=${COEFFICIENT_LIMITS.languagesPerTypeface.max}, but languages=${this.languageIds.length}`,
       );
     }
 
@@ -530,12 +532,18 @@ class Seeder {
       typefaceIndex++
     ) {
       const typeface = this.typefaces[typefaceIndex];
+      const languagesPerTypeface = faker.number.int(
+        COEFFICIENT_LIMITS.languagesPerTypeface,
+      );
 
       for (let offset = 0; offset < languagesPerTypeface; offset++) {
         const languageIndex =
           (typefaceIndex + offset) % this.languageIds.length;
 
         const languageId = this.languageIds[languageIndex];
+        const symbolsPerTypefaceLanguage = faker.number.int(
+          COEFFICIENT_LIMITS.symbolsPerTypefaceLanguage,
+        );
 
         for (
           let symbolOffset = 0;
@@ -550,12 +558,6 @@ class Seeder {
           });
         }
       }
-    }
-
-    if (rows.length !== totalSymbolRows) {
-      throw new Error(
-        `Cannot seed Symbol: created ${rows.length}/${totalSymbolRows} rows`,
-      );
     }
 
     return rows;
