@@ -52,7 +52,10 @@ R_1 &= \pi_{T.id, T.name}\
 \end{aligned}
 \]
 
+Текст запроса~1 приведён в листинге~\ref{lst:query-01}, результат выполнения показан на рисунке~\ref{fig:img/query-01-result.png}.
+
 \captionof{listing}{Запрос 1}
+\label{lst:query-01}
 \vspace{-10pt}
 \inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_01.sql}
 
@@ -71,7 +74,10 @@ R_2 =
 \right)
 \]
 
+Текст запроса~2 приведён в листинге~\ref{lst:query-02}, результат выполнения показан на рисунке~\ref{fig:img/query-02-result.png}.
+
 \captionof{listing}{Запрос 2}
+\label{lst:query-02}
 \vspace{-10pt}
 \inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_02.sql}
 
@@ -79,7 +85,7 @@ R_2 =
 
 \subsubsection{Запрос 3}
 
-Для каждого формата посчитать число начертаний и число символов алфавита. Полученные пары значений используются для построения двумерной гистограммы.
+Для каждого формата посчитать число начертаний и число символов алфавита. Полученные значения используются для построения гистограммы.
 
 \[
 R_3 =
@@ -87,17 +93,20 @@ R_3 =
 (F \bowtie T \bowtie S)
 \]
 
+Текст запроса~3 приведён в листинге~\ref{lst:query-03}, результат выполнения показан на рисунке~\ref{fig:img/query-03-result.png}, а гистограмма по полученным данным --- на рисунке~\ref{fig:histograms/query-03-histogram.png}.
+
 \captionof{listing}{Запрос 3}
+\label{lst:query-03}
 \vspace{-10pt}
 \inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_03.sql}
 
 \screenshot[0.75]{img/query-03-result.png}{Результат выполнения запроса 3}
 
-\screenshot[0.75]{histograms/query-03-histogram.png}{Двумерная гистограмма по результатам запроса 3}
+\screenshot[0.95]{histograms/query-03-histogram.png}{Гистограмма по результатам запроса 3}
 
 \subsubsection{Запрос 4}
 
-Посчитать число начертаний с одинаковым числом символов. Полученные пары значений используются для построения двумерной гистограммы.
+Посчитать число начертаний с одинаковым числом символов. Полученные значения используются для построения гистограммы.
 
 \[
 \begin{aligned}
@@ -106,11 +115,14 @@ R_4 &= \gamma_{symbol\_count;\ \operatorname{count}(T.id) \rightarrow typeface\_
 \end{aligned}
 \]
 
+Текст запроса~4 приведён в листинге~\ref{lst:query-04}, гистограмма по полученным данным показана на рисунке~\ref{fig:histograms/query-04-histogram.png}.
+
 \captionof{listing}{Запрос 4}
+\label{lst:query-04}
 \vspace{-10pt}
 \inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_04.sql}
 
-\screenshot[0.8]{histograms/query-04-histogram.png}{Двумерная гистограмма по результатам запроса 4}
+\screenshot[0.95]{histograms/query-04-histogram.png}{Гистограмма по результатам запроса 4}
 
 \subsubsection{Запрос 5}
 
@@ -124,7 +136,10 @@ R_5 &= \sigma_{family\_count=\max(Q.family\_count) \lor family\_count=\min(Q.fam
 \end{aligned}
 \]
 
+Текст запроса~5 приведён в листинге~\ref{lst:query-05}, результат выполнения показан на рисунке~\ref{fig:img/query-05-result.png}.
+
 \captionof{listing}{Запрос 5}
+\label{lst:query-05}
 \vspace{-10pt}
 \inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_05.sql}
 
@@ -140,7 +155,10 @@ R_6 =
 \pi_{L.id,L.name}\left(\sigma_{W.name=A}(L \bowtie S \bowtie T \bowtie W)\right)
 \]
 
+Текст запроса~6 приведён в листинге~\ref{lst:query-06}, результат выполнения показан на рисунке~\ref{fig:img/query-06-result.png}.
+
 \captionof{listing}{Запрос 6}
+\label{lst:query-06}
 \vspace{-10pt}
 \inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_06.sql}
 
@@ -157,7 +175,10 @@ R_7 &= \sigma_{Q.typeface\_count > Q_A.typeface\_count}(Q \times \sigma_{name=A}
 \end{aligned}
 \]
 
+Текст запроса~7 приведён в листинге~\ref{lst:query-07}, результат выполнения показан на рисунке~\ref{fig:img/query-07-result.png}.
+
 \captionof{listing}{Запрос 7}
+\label{lst:query-07}
 \vspace{-10pt}
 \inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_07.sql}
 
@@ -165,7 +186,7 @@ R_7 &= \sigma_{Q.typeface\_count > Q_A.typeface\_count}(Q \times \sigma_{name=A}
 
 \subsubsection{Запрос 8}
 
-Для каждой категории и каждого языка посчитать число символов. Для вывода используются первые 10 языков; результат предназначен для построения двумерной гистограммы.
+Для каждой категории и каждого языка посчитать число символов. Для вывода используются первые 10 языков; результат предназначен для построения гистограммы.
 
 \[
 R_8 =
@@ -173,11 +194,14 @@ R_8 =
 (C \bowtie FF \bowtie T \bowtie S \bowtie L_{1..10})
 \]
 
+Текст запроса~8 приведён в листинге~\ref{lst:query-08}, гистограмма по полученным данным показана на рисунке~\ref{fig:histograms/query-08-histogram.png}.
+
 \captionof{listing}{Запрос 8}
+\label{lst:query-08}
 \vspace{-10pt}
 \inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_08.sql}
 
-\screenshot[0.9]{histograms/query-08-histogram.png}{Двумерная гистограмма по результатам запроса 8}
+\screenshot[1]{histograms/query-08-histogram.png}{Гистограмма по результатам запроса 8}
 
 \subsubsection{Запрос 9}
 
@@ -192,6 +216,11 @@ R_9 =
 \right)
 \]
 
+Текст запроса~9 приведён в листинге~\ref{lst:query-09}, результат выполнения показан на рисунке~\ref{fig:img/query-09-result.png}.
+
 \captionof{listing}{Запрос 9}
+\label{lst:query-09}
 \vspace{-10pt}
 \inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_09.sql}
+
+\screenshot[0.75]{img/query-09-result.png}{Результат выполнения запроса 9}

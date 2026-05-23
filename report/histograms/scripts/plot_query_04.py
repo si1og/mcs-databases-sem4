@@ -13,11 +13,20 @@ import matplotlib.pyplot as plt
 DATA_PATH = ROOT / "data" / "query_04.csv"
 OUTPUT_PATH = ROOT / "query-04-histogram.png"
 
+plt.rcParams.update(
+    {
+        "axes.titlesize": 28,
+        "axes.labelsize": 23,
+        "xtick.labelsize": 19,
+        "ytick.labelsize": 19,
+    }
+)
+
 
 def main() -> None:
     data = pd.read_csv(DATA_PATH)
 
-    plt.figure(figsize=(10, 5.2))
+    plt.figure(figsize=(15.5, 8.6))
     plt.bar(
         data["symbol_count"],
         data["typeface_count"],
@@ -27,12 +36,12 @@ def main() -> None:
         linewidth=0.6,
     )
 
-    plt.title("Typeface count by number of symbols")
+    plt.title("Typeface count by number of symbols", pad=22)
     plt.xlabel("Symbol count")
     plt.ylabel("Typeface count")
     plt.grid(axis="y", linestyle="--", alpha=0.35)
     plt.tight_layout()
-    plt.savefig(OUTPUT_PATH, dpi=220)
+    plt.savefig(OUTPUT_PATH, dpi=220, bbox_inches="tight", pad_inches=0.25)
 
 
 if __name__ == "__main__":

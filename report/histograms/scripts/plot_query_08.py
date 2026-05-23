@@ -13,6 +13,16 @@ import matplotlib.pyplot as plt
 DATA_PATH = ROOT / "data" / "query_08.csv"
 OUTPUT_PATH = ROOT / "query-08-histogram.png"
 
+plt.rcParams.update(
+    {
+        "axes.titlesize": 28,
+        "axes.labelsize": 23,
+        "xtick.labelsize": 19,
+        "ytick.labelsize": 19,
+        "legend.fontsize": 17,
+    }
+)
+
 
 def main() -> None:
     data = pd.read_csv(DATA_PATH)
@@ -21,32 +31,37 @@ def main() -> None:
         columns="language_name",
         values="symbol_count",
     )
+    category_positions = range(len(matrix.index))
+    bar_width = 0.075
+    colors = plt.cm.tab10.colors
 
-    plt.figure(figsize=(11, 6.4))
-    image = plt.imshow(matrix, cmap="YlGnBu", aspect="auto")
-    plt.colorbar(image, label="Symbol count")
+    fig, axis = plt.subplots(figsize=(22, 11.0))
 
-    plt.xticks(range(len(matrix.columns)), matrix.columns, rotation=35, ha="right")
-    plt.yticks(range(len(matrix.index)), matrix.index)
-    plt.title("Symbol counts by category and language")
-    plt.xlabel("Language")
-    plt.ylabel("Category")
+    for language_index, language in enumerate(matrix.columns):
+        offsets = [
+            position
+            + (language_index - (len(matrix.columns) - 1) / 2) * bar_width
+            for position in category_positions
+        ]
+        axis.bar(
+            offsets,
+            matrix[language],
+            width=bar_width,
+            label=language,
+            color=colors[language_index % len(colors)],
+        )
 
-    for row_index, category in enumerate(matrix.index):
-        for column_index, language in enumerate(matrix.columns):
-            value = int(matrix.loc[category, language])
-            plt.text(
-                column_index,
-                row_index,
-                str(value),
-                ha="center",
-                va="center",
-                fontsize=7,
-                color="#10202f",
-            )
+    axis.set_title("Symbol counts by category and language", pad=30)
+    axis.set_xlabel("Category")
+    axis.set_ylabel("Symbol count")
+    axis.set_xticks(list(category_positions))
+    axis.set_xticklabels(matrix.index, rotation=25, ha="right")
+    axis.grid(axis="y", linestyle="--", alpha=0.35)
+    axis.legend(ncol=1, loc="center left", bbox_to_anchor=(1.01, 0.5))
+    axis.margins(x=0.01)
 
-    plt.tight_layout()
-    plt.savefig(OUTPUT_PATH, dpi=220)
+    fig.tight_layout()
+    fig.savefig(OUTPUT_PATH, dpi=220, bbox_inches="tight", pad_inches=0.3)
 
 
 if __name__ == "__main__":
