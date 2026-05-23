@@ -169,7 +169,7 @@
 % Гарнитура.id_Категория → Категория.id_Категория
 \draw[lnk] ([xshift=\xEastShift]ff_fk_cat.west)
     -- ++(\hgap,0) node[crd, above] {$\infty$}
-    node[ann, below] {30--35}
+    node[ann, below] {15--20}
     |- ++(\oneRowTablesLinkMargin,0)
     |- ([xshift={-\hgap + \xWestShift}]cat_pk.west)
     -- node[crd, above] {1} ([xshift=\xWestShift]cat_pk.west);
@@ -193,14 +193,14 @@
 % Символ.id_Начертание → Начертание.id_Начертание
 \draw[lnk] ([xshift=\xEastShift]alph_fk_tf.west)
     -- ++(\hgap,0) node[crd, above] {$\infty$}
-    node[ann, below] {1--2 языка на начерт.}
+    node[ann, below] {2--5 языков на начерт.}
     |- ([xshift={-\hgap + \xWestShift}]tf_pk.west)
     -- node[crd, above] {1} ([xshift=\xWestShift]tf_pk.west);
 
 % Символ.id_Язык → Язык.id_Язык
 \draw[lnk] ([xshift=\xWestShift]alph_fk_lang.west)
     -- ++(-\hgap,0) node[crd, above] {$\infty$}
-    node[ann, below] {35--45 символов на пару}
+    node[ann, below] {33--45 букв на пару}
     |- ([xshift=\xWestShift]lang_pk.west)
     -- node[crd, above] {1} ([xshift=\xWestShift]lang_pk.west);
 
@@ -257,9 +257,9 @@
 \node[ann, above=0.3em of lang] {2; --; 40};
 
 % Производные таблицы
-\node[ann, above=0.3em of ff] {2; 408};
-\node[ann, above=0.3em of tf] {3; 8160};
-\node[ann, above=0.3em of alph] {4; 326400};
+\node[ann, above=0.3em of ff] {2; 240};
+\node[ann, above=0.3em of tf] {3; 5280};
+\node[ann, above=0.3em of alph] {4; 390720};
 
 \end{tikzpicture}
 \caption{Программируемая схема базы данных}
