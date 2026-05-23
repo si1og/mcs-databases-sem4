@@ -1,3 +1,7 @@
+-- План выполнения запроса 2 для импорта в Dalibo Explain.
+-- После запуска скопируйте JSON из результата EXPLAIN на https://explain.dalibo.com/.
+
+EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)
 -- Посчитать число языков, в которых присутствует формат A и которые относятся
 -- к категории C.
 

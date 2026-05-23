@@ -1,0 +1,47 @@
+[
+  {
+    "id": "01",
+    "file": "query_01_explain.sql",
+    "query": "-- План выполнения запроса 1 для импорта в Dalibo Explain.\n-- После запуска скопируйте JSON из результата EXPLAIN на https://explain.dalibo.com/.\n\nEXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)\n-- Найти начертания, относящиеся к категории A, у которых присутствует символ B\n-- начертания C.\n\nSELECT DISTINCT t.id_typeface, t.name\nFROM Typeface t\n-- подбираем гарнитуру, к которой относится начертание\nJOIN Font_family ff ON ff.id_font_family = t.id_font_family\n-- подбираем категорию гарнитуры\nJOIN Category c ON c.id_category = ff.id_category\n-- подбираем символы, присутствующие в текущем начертании\nJOIN Symbol s ON s.id_typeface = t.id_typeface\n-- подбираем тот же символ у начертания C\nJOIN Symbol source_s\n  ON source_s.value = s.value\n AND source_s.id_language = s.id_language\nJOIN Typeface source_t ON source_t.id_typeface = source_s.id_typeface\n-- оставляем категорию A, символ B и начертание C\nWHERE c.name = 'Serif'\n  AND source_s.value = U&'\\0100'\n  AND source_t.name = 'Family 1 Thin'\nORDER BY t.id_typeface;\n"
+  },
+  {
+    "id": "02",
+    "file": "query_02_explain.sql",
+    "query": "-- План выполнения запроса 2 для импорта в Dalibo Explain.\n-- После запуска скопируйте JSON из результата EXPLAIN на https://explain.dalibo.com/.\n\nEXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)\n-- Посчитать число языков, в которых присутствует формат A и которые относятся\n-- к категории C.\n\nSELECT COUNT(DISTINCT l.id_language) AS language_count\nFROM Language l\n-- подбираем символы, относящиеся к языку\nJOIN Symbol s ON s.id_language = l.id_language\n-- подбираем начертание, которому принадлежит символ\nJOIN Typeface t ON t.id_typeface = s.id_typeface\n-- подбираем формат начертания - A\nJOIN Format f ON f.id_format = t.id_format\n-- подбираем гарнитуру, к которой относится начертание\nJOIN Font_family ff ON ff.id_font_family = t.id_font_family\n-- подбираем категорию C гарнитуры\nJOIN Category c ON c.id_category = ff.id_category\n-- оставляем только формат A и категорию C\nWHERE f.name = 'TrueType'\n  AND c.name = 'Serif';\n"
+  },
+  {
+    "id": "03",
+    "file": "query_03_explain.sql",
+    "query": "-- План выполнения запроса 3 для импорта в Dalibo Explain.\n-- После запуска скопируйте JSON из результата EXPLAIN на https://explain.dalibo.com/.\n\nEXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)\n-- Для каждого формата посчитать число начертаний и число символов алфавита;\n-- результат используется для построения двумерной гистограммы.\n\nSELECT\n  f.id_format,\n  f.name AS format_name,\n  COUNT(DISTINCT t.id_typeface) AS typeface_count,\n  COUNT(s.id_symbol) AS symbol_count\nFROM Format f\n-- подбираем начертания формата (сохраняем форматы без начертаний)\nLEFT JOIN Typeface t ON t.id_format = f.id_format\n-- подбираем символы начертания (сохраняем начертания без символов)\nLEFT JOIN Symbol s ON s.id_typeface = t.id_typeface\nGROUP BY f.id_format, f.name\nORDER BY f.id_format;\n"
+  },
+  {
+    "id": "04",
+    "file": "query_04_explain.sql",
+    "query": "-- План выполнения запроса 4 для импорта в Dalibo Explain.\n-- После запуска скопируйте JSON из результата EXPLAIN на https://explain.dalibo.com/.\n\nEXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)\n-- Посчитать число начертаний с одинаковым числом символов; результат\n-- используется для построения двумерной гистограммы.\n\nSELECT\n  symbol_count,\n  COUNT(*) AS typeface_count\nFROM (\n  SELECT\n    t.id_typeface,\n    COUNT(s.id_symbol) AS symbol_count\n  FROM Typeface t\n  -- подбираем символы начертания (сохраняем начертания без символов)\n  LEFT JOIN Symbol s ON s.id_typeface = t.id_typeface\n  GROUP BY t.id_typeface\n) typeface_symbol_counts\nGROUP BY symbol_count\nORDER BY symbol_count;\n"
+  },
+  {
+    "id": "05",
+    "file": "query_05_explain.sql",
+    "query": "-- План выполнения запроса 5 для импорта в Dalibo Explain.\n-- После запуска скопируйте JSON из результата EXPLAIN на https://explain.dalibo.com/.\n\nEXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)\n-- Найти символы с наибольшим и наименьшим числом поддерживающих гарнитур.\n\nSELECT value, unicode_code, font_family_count\nFROM (\n  SELECT\n    s.value,\n    s.unicode_code,\n    COUNT(DISTINCT ff.id_font_family) AS font_family_count,\n    MIN(COUNT(DISTINCT ff.id_font_family)) OVER () AS min_count,\n    MAX(COUNT(DISTINCT ff.id_font_family)) OVER () AS max_count\n  FROM Symbol s\n  -- подбираем начертание, которому принадлежит символ\n  JOIN Typeface t ON t.id_typeface = s.id_typeface\n  -- подбираем гарнитуру, к которой относится начертание\n  JOIN Font_family ff ON ff.id_font_family = t.id_font_family\n  GROUP BY s.value, s.unicode_code\n) symbol_family_counts\n-- оставляем только символы с максимальным или минимальным числом гарнитур\nWHERE font_family_count IN (min_count, max_count)\nORDER BY font_family_count DESC, unicode_code;\n"
+  },
+  {
+    "id": "06",
+    "file": "query_06_explain.sql",
+    "query": "-- План выполнения запроса 6 для импорта в Dalibo Explain.\n-- После запуска скопируйте JSON из результата EXPLAIN на https://explain.dalibo.com/.\n\nEXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)\n-- Найти языки, в которых отсутствует насыщенность A.\n\nSELECT l.id_language, l.name\nFROM Language l\n-- оставляем языки, для которых не найдено указанной насыщенности\nWHERE NOT EXISTS (\n  SELECT 1\n  FROM Symbol s\n  -- подбираем начертание, которому принадлежит символ\n  JOIN Typeface t ON t.id_typeface = s.id_typeface\n  -- подбираем насыщенность начертания\n  JOIN Weight w ON w.id_weight = t.id_weight\n  -- (проверяем символы текущего языка из запроса)\n  WHERE s.id_language = l.id_language\n    -- оставляем только насыщенность A\n    AND w.name = 'Thin'\n)\nORDER BY l.id_language;\n"
+  },
+  {
+    "id": "07",
+    "file": "query_07_explain.sql",
+    "query": "-- План выполнения запроса 7 для импорта в Dalibo Explain.\n-- После запуска скопируйте JSON из результата EXPLAIN на https://explain.dalibo.com/.\n\nEXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)\n-- Найти форматы, в которых больше начертаний, чем в формате A.\n\nSELECT\n  f.id_format,\n  f.name,\n  COUNT(t.id_typeface) AS typeface_count\nFROM Format f\n-- подбираем начертания формата; LEFT JOIN сохраняет форматы без начертаний\nLEFT JOIN Typeface t ON t.id_format = f.id_format\nGROUP BY f.id_format, f.name\n-- оставляем форматы, где начертаний больше, чем в формате A\nHAVING COUNT(t.id_typeface) > (\n  SELECT COUNT(*)\n  FROM Typeface base_t\n  JOIN Format base_f ON base_f.id_format = base_t.id_format\n  WHERE base_f.name = 'WOFF2'\n)\nORDER BY typeface_count DESC, f.id_format;\n"
+  },
+  {
+    "id": "08",
+    "file": "query_08_explain.sql",
+    "query": "-- План выполнения запроса 8 для импорта в Dalibo Explain.\n-- После запуска скопируйте JSON из результата EXPLAIN на https://explain.dalibo.com/.\n\nEXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)\n-- Для каждой категории и каждого языка посчитать число символов для первых\n-- десяти языков; результат используется для построения двумерной гистограммы.\n\nSELECT\n  c.id_category,\n  c.name AS category_name,\n  l.id_language,\n  l.name AS language_name,\n  COUNT(s.id_symbol) AS symbol_count\nFROM Category c\nCROSS JOIN (\n  SELECT id_language, name\n  FROM Language\n  ORDER BY id_language\n  LIMIT 10\n) l\n-- подбираем гарнитуры категории; LEFT JOIN сохраняет категории без гарнитур\nLEFT JOIN Font_family ff ON ff.id_category = c.id_category\n-- подбираем начертания гарнитуры; LEFT JOIN сохраняет гарнитуры без начертаний\nLEFT JOIN Typeface t ON t.id_font_family = ff.id_font_family\nLEFT JOIN Symbol s\n  -- подбираем символы начертания только для текущего языка\n  ON s.id_typeface = t.id_typeface\n AND s.id_language = l.id_language\nGROUP BY c.id_category, c.name, l.id_language, l.name\nORDER BY c.id_category, l.id_language;\n"
+  },
+  {
+    "id": "09",
+    "file": "query_09_explain.sql",
+    "query": "-- План выполнения запроса 9 для импорта в Dalibo Explain.\n-- После запуска скопируйте JSON из результата EXPLAIN на https://explain.dalibo.com/.\n\n-- Для начертания A и гарнитуры B поменять формат с C на D.\n\nBEGIN;\nEXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)\nUPDATE Typeface t\nSET id_format = new_f.id_format\nFROM Font_family ff, Format old_f, Format new_f\n-- подбираем гарнитуру, старый формат и новый формат\nWHERE ff.id_font_family = t.id_font_family\n  AND old_f.id_format = t.id_format\n  -- оставляем начертание A, гарнитуру B и старый формат C\n  AND t.name = 'Family 1 Thin'\n  AND ff.name = 'Striking Horde 1'\n  AND old_f.name = 'TrueType'\n  -- меняем формат на D\n  AND new_f.name = 'OpenType'\nRETURNING\n  t.id_typeface,\n  t.name AS typeface_name,\n  ff.name AS font_family_name,\n  old_f.name AS old_format_name,\n  new_f.name AS new_format_name,\n  'updated' AS status;\n\nROLLBACK;\n"
+  }
+]

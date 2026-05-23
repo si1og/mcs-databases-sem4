@@ -1,3 +1,7 @@
+-- План выполнения запроса 1 для импорта в Dalibo Explain.
+-- После запуска скопируйте JSON из результата EXPLAIN на https://explain.dalibo.com/.
+
+EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)
 -- Найти начертания, относящиеся к категории A, у которых присутствует символ B
 -- начертания C.
 

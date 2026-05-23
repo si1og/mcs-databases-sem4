@@ -1,3 +1,7 @@
+-- План выполнения запроса 5 для импорта в Dalibo Explain.
+-- После запуска скопируйте JSON из результата EXPLAIN на https://explain.dalibo.com/.
+
+EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)
 -- Найти символы с наибольшим и наименьшим числом поддерживающих гарнитур.
 
 SELECT value, unicode_code, font_family_count

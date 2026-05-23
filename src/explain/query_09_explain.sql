@@ -1,6 +1,10 @@
--- Для начертания A и гарнитуры B поменять формат с C на D.
+-- План выполнения запроса 9 для импорта в Dalibo Explain.
+-- После запуска скопируйте JSON из результата EXPLAIN на https://explain.dalibo.com/.
 
 BEGIN;
+EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)
+-- Для начертания A и гарнитуры B поменять формат с C на D.
+
 
 UPDATE Typeface t
 SET id_format = new_f.id_format
@@ -21,5 +25,4 @@ RETURNING
   old_f.name AS old_format_name,
   new_f.name AS new_format_name,
   'updated' AS status;
-
 ROLLBACK;
