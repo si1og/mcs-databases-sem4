@@ -9,7 +9,6 @@ FROM (
     t.id_typeface,
     COUNT(s.id_symbol) AS symbol_count
   FROM Typeface t
-  -- подбираем символы начертания (сохраняем начертания без символов)
   LEFT JOIN Symbol s ON s.id_typeface = t.id_typeface
   GROUP BY t.id_typeface
 ) typeface_symbol_counts

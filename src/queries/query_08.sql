@@ -14,12 +14,9 @@ CROSS JOIN (
   ORDER BY id_language
   LIMIT 10
 ) l
--- подбираем гарнитуры категории (сохраняем категории без гарнитур)
 LEFT JOIN Font_family ff ON ff.id_category = c.id_category
--- подбираем начертания гарнитуры (сохраняем гарнитуры без начертаний)
 LEFT JOIN Typeface t ON t.id_font_family = ff.id_font_family
 LEFT JOIN Symbol s
-  -- подбираем символы начертания только для текущего языка
   ON s.id_typeface = t.id_typeface
  AND s.id_language = l.id_language
 GROUP BY c.id_category, c.name, l.id_language, l.name

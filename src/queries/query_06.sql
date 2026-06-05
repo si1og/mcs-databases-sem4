@@ -2,17 +2,12 @@
 
 SELECT l.id_language, l.name
 FROM Language l
--- оставляем языки, для которых не найдено указанной насыщенности
 WHERE NOT EXISTS (
   SELECT 1
   FROM Symbol s
-  -- подбираем начертание, которому принадлежит символ
   JOIN Typeface t ON t.id_typeface = s.id_typeface
-  -- подбираем насыщенность начертания
   JOIN Weight w ON w.id_weight = t.id_weight
-  -- (проверяем символы текущего языка из запроса)
   WHERE s.id_language = l.id_language
-    -- оставляем только насыщенность A
-    AND w.name = 'Thin'
+    AND w.name = 'Thin' -- насыщенность A
 )
 ORDER BY l.id_language;
