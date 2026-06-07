@@ -2,23 +2,18 @@
 -- После запуска скопируйте JSON из результата EXPLAIN на https://explain.dalibo.com/.
 
 EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)
--- Найти символы с наибольшим и наименьшим числом поддерживающих гарнитур.
+-- Найти категории с наибольшим числом гарнитур и наименьшим числом гарнитур.
 
-SELECT value, unicode_code, font_family_count
+SELECT name, category_count
 FROM (
   SELECT
-    s.value,
-    s.unicode_code,
-    COUNT(DISTINCT ff.id_font_family) AS font_family_count,
+    c.name,
+    COUNT(DISTINCT ff.id_font_family) AS category_count,
     MIN(COUNT(DISTINCT ff.id_font_family)) OVER () AS min_count,
     MAX(COUNT(DISTINCT ff.id_font_family)) OVER () AS max_count
-  FROM Symbol s
-  -- подбираем начертание, которому принадлежит символ
-  JOIN Typeface t ON t.id_typeface = s.id_typeface
-  -- подбираем гарнитуру, к которой относится начертание
-  JOIN Font_family ff ON ff.id_font_family = t.id_font_family
-  GROUP BY s.value, s.unicode_code
+  FROM Category c
+  JOIN Font_family ff ON ff.id_category = c.id_category
+  GROUP BY c.name
 ) symbol_family_counts
--- оставляем только символы с максимальным или минимальным числом гарнитур
-WHERE font_family_count IN (min_count, max_count)
-ORDER BY font_family_count DESC, unicode_code;
+WHERE category_count IN (min_count, max_count)
+ORDER BY category_count DESC;
