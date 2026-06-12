@@ -1,5 +1,5 @@
 \documentclass[a3paper, landscape]{article}
-\usepackage[left=2cm, right=2cm, top=2cm, bottom=2cm]{geometry}
+\usepackage[left=0cm, right=0cm, top=0cm, bottom=0cm]{geometry}
 \usepackage[T2A]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[russian]{babel}
@@ -16,7 +16,7 @@
 \begin{document}
 \begin{figure}[p]
 \centering
-\scalebox{0.80}{
+\scalebox{.93}{
 \begin{tikzpicture}[node distance=6em, every edge/.style={link}]
 
 % ИЗДАТЕЛЬСТВО
@@ -104,8 +104,8 @@
 \draw[link] (obl) -- node[left] {N} (podder);
 \node[attribute] (pl2) [above left of=podder] {Значение} edge (podder);
 \node[attribute] (pl3) [below left of=podder] {Код Unicode} edge (podder);
-\node[derived attribute] (pl4) [above right of=podder] {Число начертаний} edge (podder);
-\node[derived attribute] (pl5) [below right of=podder] {Число языков} edge (podder);
+\node[derived attribute] (pl4) [below right of=podder] {Число начертаний} edge (podder);
+\node[derived attribute] (pl5) [below of=podder] {Число языков} edge (podder);
 
 % поддерживает
 \node[relationship] (r_pod1) [left=12em of podder] {Относится}
@@ -186,6 +186,5 @@
 
 \end{tikzpicture}
 }
-\caption{ER-диаграмма предметной области <<Учёт компьютерных шрифтов в электронной типографии>>}
 \end{figure}
 \end{document}

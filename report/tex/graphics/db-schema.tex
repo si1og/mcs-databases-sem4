@@ -1,5 +1,5 @@
 \documentclass[a3paper, landscape]{article}
-\usepackage[left=0.5cm, right=0.5cm, top=0.5cm, bottom=0.5cm]{geometry}
+\usepackage[left=0cm, right=0cm, top=0cm, bottom=0cm]{geometry}
 \usepackage[T2A]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[russian]{babel}
@@ -8,7 +8,6 @@
 \usepackage{tabularray}
 \usepackage{tikz}
 \usetikzlibrary{positioning, calc, tikzmark}
-\addtocounter{figure}{2}
 
 \newcommand{\tm}[2]{\tikzmarknode{#1}{#2}}
 
@@ -53,6 +52,7 @@
 \begin{document}
 \begin{figure}[p]
 \centering
+\scalebox{1.05}{
 \begin{tikzpicture}[remember picture]
 
 % === Shifts ===
@@ -398,6 +398,6 @@
 \node[ann, above=0.3em of d_bit] {1; --; --};
 
 \end{tikzpicture}
-\caption{Схема базы данных на русском языке}
+}
 \end{figure}
 \end{document}

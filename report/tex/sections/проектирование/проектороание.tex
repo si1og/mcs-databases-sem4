@@ -411,25 +411,8 @@
 
 }
 
-\clearpage
-\refstepcounter{figure}
-\label{fig:db-schema-ru}
-\includepdf[
-    pages=1,
-    landscape,
-    fitpaper,
-    pagecommand={\thispagestyle{empty}}
-]{tex/graphics/db-schema.pdf}
-
-\clearpage
-\refstepcounter{figure}
-\label{fig:db-schema-eng}
-\includepdf[
-    pages=1,
-    landscape,
-    fitpaper,
-    pagecommand={\thispagestyle{empty}}
-]{tex/graphics/db-schema-eng.pdf}
+\fullPageFigure[fig:db-schema-ru]{db-schema.pdf}{Схема базы данных на русском языке}
+\fullPageFigure[fig:db-schema-eng]{db-schema-eng.pdf}{Схема базы данных на английском языке}
 
 \subsection{Создание таблиц базы данных и генерация записей}
 
@@ -445,22 +428,5 @@
 
 Количество записей в каждой таблице приведено на схемах базы данных (рисунки~\ref{fig:db-schema-small-ru} и~\ref{fig:db-schema-small-eng}).
 
-\clearpage
-\refstepcounter{figure}
-\label{fig:db-schema-small-ru}
-\includepdf[
-    pages=1,
-    landscape,
-    fitpaper,
-    pagecommand={\thispagestyle{empty}}
-]{tex/graphics/db-schema-small.pdf}
-
-\clearpage
-\refstepcounter{figure}
-\label{fig:db-schema-small-eng}
-\includepdf[
-    pages=1,
-    landscape,
-    fitpaper,
-    pagecommand={\thispagestyle{empty}}
-]{tex/graphics/db-schema-small-eng.pdf}
+\fullPageFigure[fig:db-schema-small-ru]{db-schema-small.pdf}{Программируемая схема базы данных на русском языке}
+\fullPageFigure[fig:db-schema-small-eng]{db-schema-small-eng.pdf}{Программируемая схема базы данных на английском языке}

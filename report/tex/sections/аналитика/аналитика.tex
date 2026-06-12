@@ -103,7 +103,7 @@
 
 \subsection{ER-диаграмма}
 
-На рисунке~1 (стр.~\pageref{fig:er}) представлена ER-диаграмма предметной области. Перечень связей:
+На рисунке \ref{fig:er} (стр.~\pageref{fig:er}) представлена ER-диаграмма предметной области. Перечень связей:
 
 \begin{enumerate}
     \item Издательство выпускает гарнитуру.
@@ -119,12 +119,7 @@
     \item Гарнитура распространяется по лицензии.
 \end{enumerate}
 
-\includepdf[
-    pages=1,
-    landscape,
-    fitpaper,
-    pagecommand={\thispagestyle{empty}\label{fig:er}}
-]{tex/graphics/er-diagram-a3.pdf}
+\fullPageFigure[fig:er]{er-diagram-a3.pdf}{ER-диаграмма предметной области <<Учёт комьютерных шрифтов в электронной типографии>>}
 
 \subsection{Схема объектов}
 
