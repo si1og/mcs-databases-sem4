@@ -80,16 +80,16 @@ R_1 &= \pi_{T.id,T.name}
 \end{aligned}
 \]
 
-Текст запроса~1 приведён в листинге~\ref{lst:query-01}, результат выполнения показан на рисунке~\ref{fig:img/query-01-result.png}, схема плана выполнения --- на рисунке~\ref{fig:img/query-01-plan.png}.
+Текст запроса~1 приведён в листинге~\ref{lst:query-01}, результат выполнения показан на рисунке~\ref{fig:query-01-result}, схема плана выполнения --- на рисунке~\ref{fig:query-01-plan}.
 
 \captionof{listing}{Запрос 1}
 \label{lst:query-01}
 \vspace{-10pt}
 \inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_01.sql}
 
-\screenshot[0.65]{img/query-01-result.png}{Результат выполнения запроса 1}
+\screenshot[fig:query-01-result][0.65]{query-01-result.png}{Результат выполнения запроса 1}
 
-\screenshot[0.95]{img/query-01-plan.png}{План выполнения запроса 1}
+\screenshot[fig:query-01-plan][0.95]{query-01-plan.png}{План выполнения запроса 1}
 
 В результате выполнения запроса возвращаются начертания выбранной категории, в которых найден заданный символ для того же языка, что и у исходного начертания. Соединения в запросе последовательно связывают начертания с гарнитурами, категориями и символами, а затем сравнивают найденные символы с набором символов исходного начертания.
 
@@ -106,16 +106,16 @@ R_2 =
 \right)
 \]
 
-Текст запроса~2 приведён в листинге~\ref{lst:query-02}, результат выполнения показан на рисунке~\ref{fig:img/query-02-result.png}, схема плана выполнения --- на рисунке~\ref{fig:img/query-02-plan.png}.
+Текст запроса~2 приведён в листинге~\ref{lst:query-02}, результат выполнения показан на рисунке~\ref{fig:query-02-result}, схема плана выполнения --- на рисунке~\ref{fig:query-02-plan}.
 
 \captionof{listing}{Запрос 2}
 \label{lst:query-02}
 \vspace{-10pt}
 \inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_02.sql}
 
-\screenshot[0.55]{img/query-02-result.png}{Результат выполнения запроса 2}
+\screenshot[fig:query-02-result][0.55]{query-02-result.png}{Результат выполнения запроса 2}
 
-\screenshot[0.95]{img/query-02-plan.png}{План выполнения запроса 2}
+\screenshot[fig:query-02-plan][0.95]{query-02-plan.png}{План выполнения запроса 2}
 
 Результат запроса содержит одно агрегированное значение --- количество различных языков, для которых одновременно выполняются условия по формату начертания и категории гарнитуры. Для исключения повторов используется подсчёт различных идентификаторов языков.
 
@@ -129,18 +129,23 @@ R_3 =
 (F \underset{L}{\bowtie} T \underset{L}{\bowtie} S)
 \]
 
-Текст запроса~3 приведён в листинге~\ref{lst:query-03}, результат выполнения показан на рисунке~\ref{fig:img/query-03-result.png}, гистограмма по полученным данным --- на рисунке~\ref{fig:histograms/query-03-histogram.png}, схема плана выполнения --- на рисунке~\ref{fig:img/query-03-plan.png}.
+Текст запроса~3 приведён в листинге~\ref{lst:query-03}, результат выполнения показан на рисунке~\ref{fig:query-03-result}, гистограмма по полученным данным --- на рисунке~\ref{fig:query-03-histogram}, схема плана выполнения --- на рисунке~\ref{fig:query-03-plan}.
 
 \captionof{listing}{Запрос 3}
 \label{lst:query-03}
 \vspace{-10pt}
 \inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_03.sql}
 
-\screenshot[0.75]{img/query-03-result.png}{Результат выполнения запроса 3}
+\screenshot[fig:query-03-result][0.75]{query-03-result.png}{Результат выполнения запроса 3}
 
-\screenshot[0.95]{histograms/query-03-histogram.png}{Гистограмма по результатам запроса 3}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{histograms/query-03-histogram.png}
+    \caption{Гистограмма по результатам запроса 3}
+    \label{fig:query-03-histogram}
+\end{figure}
 
-\screenshot[0.75]{img/query-03-plan.png}{План выполнения запроса 3}
+\screenshot[fig:query-03-plan][0.75]{query-03-plan.png}{План выполнения запроса 3}
 
 Гистограмма показывает распределение числа начертаний и символов по форматам. По результатам видно, что наибольшее число записей связано с форматом \mintinline{text}{TrueType}, а остальные форматы имеют меньшие, но сопоставимые значения.
 
@@ -156,16 +161,21 @@ R_4 &= \gamma_{symbol\_count;\ \operatorname{count}(T.id) \rightarrow typeface\_
 \end{aligned}
 \]
 
-Текст запроса~4 приведён в листинге~\ref{lst:query-04}, гистограмма по полученным данным показана на рисунке~\ref{fig:histograms/query-04-histogram.png}, схема плана выполнения --- на рисунке~\ref{fig:img/query-04-plan.png}.
+Текст запроса~4 приведён в листинге~\ref{lst:query-04}, гистограмма по полученным данным показана на рисунке~\ref{fig:query-04-histogram}, схема плана выполнения --- на рисунке~\ref{fig:query-04-plan}.
 
 \captionof{listing}{Запрос 4}
 \label{lst:query-04}
 \vspace{-10pt}
 \inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_04.sql}
 
-\screenshot[0.95]{histograms/query-04-histogram.png}{Гистограмма по результатам запроса 4}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{histograms/query-04-histogram.png}
+    \caption{Гистограмма по результатам запроса 4}
+    \label{fig:query-04-histogram}
+\end{figure}
 
-\screenshot[0.75]{img/query-04-plan.png}{План выполнения запроса 4}
+\screenshot[fig:query-04-plan][0.75]{query-04-plan.png}{План выполнения запроса 4}
 
 Результат запроса показывает, сколько начертаний имеют одинаковое количество символов. Сначала для каждого начертания вычисляется число связанных символов, после чего выполняется повторная группировка по этому числу.
 
@@ -182,29 +192,15 @@ R_5 &= \sigma_{\substack{font\_family\_count=\max(Q.font\_family\_count)\\
 \end{aligned}
 \]
 
-Текст запроса~5 приведён в листинге~\ref{lst:query-05}, результат выполнения показан на рисунке~\ref{fig:query-05-result}, схема плана выполнения --- на рисунке~\ref{fig:img/query-05-plan.png}.
+Текст запроса~5 приведён в листинге~\ref{lst:query-05}, результат выполнения показан на рисунке~\ref{fig:query-05-result}, схема плана выполнения --- на рисунке~\ref{fig:query-05-plan}.
 
 \captionof{listing}{Запрос 5}
 \label{lst:query-05}
 \vspace{-10pt}
 \inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_05.sql}
 
-\begin{figure}[H]
-    \centering
-    \begin{minipage}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{img/query-05-result-left.png}
-    \end{minipage}
-    \hfill
-    \begin{minipage}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{img/query-05-result-right.png}
-    \end{minipage}
-    \caption{Результат выполнения запроса 5}
-    \label{fig:query-05-result}
-\end{figure}
-
-\screenshot[0.75]{img/query-05-plan.png}{План выполнения запроса 5}
+\screenshot[fig:query-05-result][0.75]{query-05-result.png}{Результат выполнения запроса 5}
+\screenshot[fig:query-05-plan][0.75]{query-05-plan.png}{План выполнения запроса 5}
 
 В результате выводятся символы с минимальным и максимальным числом поддерживающих гарнитур. Запрос не вводит отдельный признак минимума или максимума: граничные группы различаются по значению столбца \mintinline{text}{font_family_count}.
 
@@ -218,16 +214,16 @@ R_6 =
 \pi_{L.id,L.name}\left(\sigma_{W.name=A}(L \bowtie S \bowtie T \bowtie W)\right)
 \]
 
-Текст запроса~6 приведён в листинге~\ref{lst:query-06}, результат выполнения показан на рисунке~\ref{fig:img/query-06-result.png}, схема плана выполнения --- на рисунке~\ref{fig:img/query-06-plan.png}.
+Текст запроса~6 приведён в листинге~\ref{lst:query-06}, результат выполнения показан на рисунке~\ref{fig:query-06-result}, схема плана выполнения --- на рисунке~\ref{fig:query-06-plan}.
 
 \captionof{listing}{Запрос 6}
 \label{lst:query-06}
 \vspace{-10pt}
 \inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_06.sql}
 
-\screenshot[0.6]{img/query-06-result.png}{Результат выполнения запроса 6}
+\screenshot[fig:query-06-result][0.6]{query-06-result.png}{Результат выполнения запроса 6}
 
-\screenshot[0.75]{img/query-06-plan.png}{План выполнения запроса 6}
+\screenshot[fig:query-06-plan][0.75]{query-06-plan.png}{План выполнения запроса 6}
 
 Пустой результат связан с особенностью генерации тестовых данных: словарь насыщенностей заполняется полностью, всеми допустимыми значениями. Поэтому в базе данных нет языка, для которого отсутствуют начертания с заданной насыщенностью. Проверка выполняется через условие \mintinline{sql}{NOT EXISTS}: язык попадает в результат только если соответствующая связанная запись отсутствует.
 
@@ -244,16 +240,16 @@ R_7 &= \sigma_{typeface\_count>B}(Q).
 \end{aligned}
 \]
 
-Текст запроса~7 приведён в листинге~\ref{lst:query-07}, результат выполнения показан на рисунке~\ref{fig:img/query-07-result.png}, схема плана выполнения --- на рисунке~\ref{fig:img/query-07-plan.png}.
+Текст запроса~7 приведён в листинге~\ref{lst:query-07}, результат выполнения показан на рисунке~\ref{fig:query-07-result}, схема плана выполнения --- на рисунке~\ref{fig:query-07-plan}.
 
 \captionof{listing}{Запрос 7}
 \label{lst:query-07}
 \vspace{-10pt}
 \inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_07.sql}
 
-\screenshot[0.6]{img/query-07-result.png}{Результат выполнения запроса 7}
+\screenshot[fig:query-07-result][0.6]{query-07-result.png}{Результат выполнения запроса 7}
 
-\screenshot[0.95]{img/query-07-plan.png}{План выполнения запроса 7}
+\screenshot[fig:query-07-plan][0.95]{query-07-plan.png}{План выполнения запроса 7}
 
 В качестве базового формата в запросе выбран \mintinline{text}{WOFF2}. Результат показывает форматы, в которых начертаний больше, чем в \mintinline{text}{WOFF2}: \mintinline{text}{TrueType}, \mintinline{text}{OpenType} и \mintinline{text}{WOFF}. Запрос сначала вычисляет количество начертаний для каждого формата, затем сравнивает эти значения с количеством начертаний у формата $A$.
 
@@ -269,16 +265,21 @@ R_8 &= \gamma_{C.id,C.name,L.id,L.name;\ \operatorname{count}(S.id)}(Q).
 \end{aligned}
 \]
 
-Текст запроса~8 приведён в листинге~\ref{lst:query-08}, гистограмма по полученным данным показана на рисунке~\ref{fig:histograms/query-08-histogram.png}, схема плана выполнения --- на рисунке~\ref{fig:img/query-08-plan.png}.
+Текст запроса~8 приведён в листинге~\ref{lst:query-08}, гистограмма по полученным данным показана на рисунке~\ref{fig:query-08-histogram}, схема плана выполнения --- на рисунке~\ref{fig:query-08-plan}.
 
 \captionof{listing}{Запрос 8}
 \label{lst:query-08}
 \vspace{-10pt}
 \inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_08.sql}
 
-\screenshot[1]{histograms/query-08-histogram.png}{Гистограмма по результатам запроса 8}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{histograms/query-08-histogram.png}
+    \caption{Гистограмма по результатам запроса 8}
+    \label{fig:query-08-histogram}
+\end{figure}
 
-\screenshot[0.75]{img/query-08-plan.png}{План выполнения запроса 8}
+\screenshot[fig:query-08-plan][0.75]{query-08-plan.png}{План выполнения запроса 8}
 
 Гистограмма отражает число символов для пар «категория --- язык» по первым десяти языкам. Использование декартова произведения категорий и выбранных языков позволяет вывести все пары, а внешние соединения сохраняют строки даже при отсутствии связанных символов.
 
@@ -297,15 +298,15 @@ R_9 =
 \end{aligned}
 \]
 
-Текст запроса~9 приведён в листинге~\ref{lst:query-09}, результат выполнения показан на рисунке~\ref{fig:img/query-09-result.png}, схема плана выполнения --- на рисунке~\ref{fig:img/query-09-plan.png}.
+Текст запроса~9 приведён в листинге~\ref{lst:query-09}, результат выполнения показан на рисунке~\ref{fig:query-09-result}, схема плана выполнения --- на рисунке~\ref{fig:query-09-plan}.
 
 \captionof{listing}{Запрос 9}
 \label{lst:query-09}
 \vspace{-10pt}
 \inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_09.sql}
 
-\screenshot[0.75]{img/query-09-result.png}{Результат выполнения запроса 9}
+\screenshot[fig:query-09-result][0.75]{query-09-result.png}{Результат выполнения запроса 9}
 
-\screenshot[0.95]{img/query-09-plan.png}{План выполнения запроса 9}
+\screenshot[fig:query-09-plan][0.95]{query-09-plan.png}{План выполнения запроса 9}
 
 Запрос изменяет формат выбранного начертания в рамках транзакции и возвращает сведения о найденной записи: идентификатор начертания, его название, гарнитуру, старый и новый формат, а также статус операции. Для демонстрационного запуска используется откат транзакции, поэтому после проверки состояние базы данных не изменяется.

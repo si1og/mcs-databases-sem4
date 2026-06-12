@@ -1,9 +1,14 @@
-\newcommand{\screenshot}[3][0.9]{
+\NewDocumentCommand{\screenshot}{O{} O{0.9} m m}{
     \begin{figure}[H]
         \centering
-        \includegraphics[width=#1\textwidth]{#2}
-        \caption{#3}
-        \label{fig:#2}
+        \includegraphics[width=#2\textwidth]{img/#3}
+        \caption{#4}
+        \def\screenshotLabel{#1}
+        \ifx\screenshotLabel\empty
+            \label{fig:#3}
+        \else
+            \label{#1}
+        \fi
     \end{figure}
 }
 
