@@ -61,7 +61,7 @@
 \def\xEastShift{12.6em}
 \def\dxWestShift{-3.4em}
 \def\dxEastShift{7.7em}
-\def\oneRowTablesLinkMargin{7.9em}
+\def\oneRowTablesLinkMargin{7em}
 \def\tableHgap{27em}
 
 % ==================== ОСНОВНЫЕ ТАБЛИЦЫ ====================
@@ -207,7 +207,7 @@
        & Название \\
 }
 
-\dbdict{d_st}{-16em,-60em}{
+\dbdict{d_st}{-16em,-60.45em}{
     \SetCell[c=2]{c} Тип\_письм. & \\
     PK & \tm{d_st_pk}{id\_Тип\_п.} \\
        & Название \\
@@ -227,25 +227,25 @@
 }
 
 % Правый край
-\dbdict{d_ext}{72em,-20em}{
+\dbdict{d_ext}{72em,-21.24em}{
     \SetCell[c=2]{c} Расширение & \\
     PK & \tm{d_ext_pk}{id\_Расшир.} \\
        & Название \\
 }
 
-\dbdict{d_proc}{82em,-30em}{
+\dbdict{d_proc}{82em,-34em}{
     \SetCell[c=2]{c} Процессор & \\
     PK & \tm{d_proc_pk}{id\_Процесс.} \\
        & Название \\
 }
 
-\dbdict{d_stor}{82em,-40em}{
+\dbdict{d_stor}{82em,-42.45em}{
     \SetCell[c=2]{c} Тип\_накоп. & \\
     PK & \tm{d_stor_pk}{id\_Тип\_н.} \\
        & Название \\
 }
 
-\dbdict{d_bit}{45em,-54em}{
+\dbdict{d_bit}{45em,-58.85em}{
     \SetCell[c=2]{c} Разрядность & \\
     PK & \tm{d_bit_pk}{id\_Разряд.} \\
        & Значение \\
@@ -267,7 +267,7 @@
 
 % Гарнитура.id_Гарнитура → Начертание.id_Гарнитура
 \draw[lnk] ([xshift=\xEastShift]ff_pk.west) -- ++(\hgap,0) node[crd, below] {1}
-    |- ++(0, 5em) |- ++(28.7em, 0) |- ++(0, -28em) |- ++(-24em, 0)
+    |- ++(0, 5em) |- ++(28.7em, 0) |- ++(0, -28em) |- ++(-23.7em, 0)
     |- node[crd, pos=0.75, above] {$\infty$} ([xshift=\xEastShift]tf_fk_ff.west);
 
 % Издательство.id_Издательство → Лицензия.id_Издательство
@@ -287,7 +287,7 @@
 
 % Начертание.id_Начертание → Символ.id_Начертание
 \draw[lnk] ([xshift=\xWestShift, yshift=.4em]tf_pk.west) -- ++(-\hgap*2,0) node[crd, above] {1}
-    |- ++(0, -13.2em) |- ++(-6em, 0)
+    |- ++(0, -13.2em) |- ++(-5.6em, 0)
     |- node[crd, pos=0.75, above] {$\infty$} ([xshift=\xWestShift]alph_fk_tf.west);
 
 % Начертание.id_Начертание → Установка.id_Начертание
@@ -365,37 +365,37 @@
 
 
 % Уровень 1
-\node[ann, above=0.3em of cat] {1; --; --};
-\node[ann, above=0.3em of fmt] {1; --; --};
-\node[ann, above=0.3em of os] {1; --; --};
+\node[ann, above=0.3em of cat] {1};
+\node[ann, above=0.3em of fmt] {1};
+\node[ann, above=0.3em of os] {1};
 % все словари тоже 1
 
 % Уровень 2
-\node[ann, above=0.3em of pub] {2; --; --};
-\node[ann, above=0.3em of lang] {2; --; --};
-\node[ann, above=0.3em of ws] {2; --; --};
+\node[ann, above=0.3em of pub] {2};
+\node[ann, above=0.3em of lang] {2};
+\node[ann, above=0.3em of ws] {2};
 
 % Уровень 3
-\node[ann, above=0.3em of ff] {3; --; --};
+\node[ann, above=0.3em of ff] {3};
 
 % Уровень 4
-\node[ann, above=0.3em of tf] {4; --; --};
-\node[ann, above=0.3em of lic] {4; --; --};
+\node[ann, above=0.3em of tf] {4};
+\node[ann, above=0.3em of lic] {4};
 
 % Уровень 5
-\node[ann, above=0.3em of alph] {5; --; --};
-\node[ann, above=0.3em of inst] {5; --; --};
+\node[ann, above=0.3em of alph] {5};
+\node[ann, above=0.3em of inst] {5};
 
-\node[ann, above=0.3em of d_country] {1; --; --};
-\node[ann, above=0.3em of d_lictype] {1; --; --};
-\node[ann, above=0.3em of d_wd] {1; --; --};
-\node[ann, above=0.3em of d_st] {1; --; --};
-\node[ann, above=0.3em of d_weight] {1; --; --};
-\node[ann, above=0.3em of d_slope] {1; --; --};
-\node[ann, above=0.3em of d_ext] {1; --; --};
-\node[ann, above=0.3em of d_proc] {1; --; --};
-\node[ann, above=0.3em of d_stor] {1; --; --};
-\node[ann, above=0.3em of d_bit] {1; --; --};
+\node[ann, above=0.3em of d_country] {1};
+\node[ann, above=0.3em of d_lictype] {1};
+\node[ann, above=0.3em of d_wd] {1};
+\node[ann, above=0.3em of d_st] {1};
+\node[ann, above=0.3em of d_weight] {1};
+\node[ann, above=0.3em of d_slope] {1};
+\node[ann, above=0.3em of d_ext] {1};
+\node[ann, above=0.3em of d_proc] {1};
+\node[ann, above=0.3em of d_stor] {1};
+\node[ann, above=0.3em of d_bit] {1};
 
 \end{tikzpicture}
 }
