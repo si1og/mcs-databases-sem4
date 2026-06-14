@@ -37,7 +37,7 @@
 
 Для проверки работы базы данных были составлены SQL-запросы, соответствующие основным пользовательским операциям. Лист проверки выполнения запросов представлен на рисунке~\ref{fig:query-check-list}. Тексты запросов хранятся в отдельных SQL-файлах в каталоге \mintinline{text}{src/queries}. Для построения визуализаций планов выполнения используется сервис Dalibo Explain\footnote{\url{https://explain.dalibo.com/}}: в него можно загрузить результат выполнения команды \mintinline{sql}{EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)} для нужного запроса.
 
-\screenshot[fig:query-check-list][0.9]{quaries.pdf}{Лист проверки выполнения запросов}
+\screenshot[fig:query-check-list][0.9]{img/quaries.pdf}{Лист проверки выполнения запросов}
 
 Время планирования и выполнения запросов было получено с помощью команды \mintinline{sql}{EXPLAIN (ANALYZE, BUFFERS)}. Результаты измерений приведены в таблице~\ref{table:query-times}.
 
@@ -89,9 +89,9 @@ R_1 &= \pi_{T.id,T.name}
 \vspace{-10pt}
 \inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_01.sql}
 
-\screenshot[fig:query-01-result][0.65]{query-01-result.png}{Результат выполнения запроса 1}
+\screenshot[fig:query-01-result][0.65]{img/query-01-result.png}{Результат выполнения запроса 1}
 
-\screenshot[fig:query-01-plan][0.95]{query-01-plan.png}{План выполнения запроса 1}
+\screenshot[fig:query-01-plan][0.95]{img/query-01-plan.png}{План выполнения запроса 1}
 
 В результате выполнения запроса возвращаются начертания выбранной категории, в которых найден заданный символ для того же языка, что и у исходного начертания. Соединения в запросе последовательно связывают начертания с гарнитурами, категориями и символами, а затем сравнивают найденные символы с набором символов исходного начертания. Порядок выполнения первого запроса описан на таблице \ref{table:query-1-execution}.
 
@@ -106,15 +106,13 @@ R_1 &= \pi_{T.id,T.name}
         \hline
         Шаг & Операция & Описание \\
         \hline
-        1 & 0.628 & 0.943 \\
-        2 & 0.626 & 766.385 \\
-        3 & 0.260 & 348.445 \\
-        4 & 0.234 & 105.751 \\
-        5 & 3.739 & 1.374 \\
-        6 & 0.396 & 7.491 \\
-        7 & 0.239 & 1.308 \\
-        8 & 0.349 & 109.254 \\
-        9 & 1.763 & 1.729 \\
+        1 & \mintinline{text}{Seq Scan (Typeface source_t)} & \\
+        2 & \mintinline{text}{Index Only Scan (Symbol source_s)} & \\
+        3 & \mintinline{text}{Index Only Scan (Symbol s)} & \\
+        4 & \mintinline{text}{Index Scan (Typeface t) } & \\
+        5 & \mintinline{text}{Index Scan (Font_family ff)} & \\
+        6 & \mintinline{text}{Index Scan (Category c)} & \\
+        7 & \mintinline{text}{Sort + Unique} & \\
         \hline
     \end{tblr}
 \end{table}
@@ -139,9 +137,9 @@ R_2 =
 \vspace{-10pt}
 \inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_02.sql}
 
-\screenshot[fig:query-02-result][0.55]{query-02-result.png}{Результат выполнения запроса 2}
+\screenshot[fig:query-02-result][0.55]{img/query-02-result.png}{Результат выполнения запроса 2}
 
-\screenshot[fig:query-02-plan][0.95]{query-02-plan.png}{План выполнения запроса 2}
+\screenshot[fig:query-02-plan][0.95]{img/query-02-plan.png}{План выполнения запроса 2}
 
 Результат запроса содержит одно агрегированное значение --- количество различных языков, для которых одновременно выполняются условия по формату начертания и категории гарнитуры. Для исключения повторов используется подсчёт различных идентификаторов языков.
 
@@ -162,7 +160,7 @@ R_3 =
 \vspace{-10pt}
 \inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_03.sql}
 
-\screenshot[fig:query-03-result][0.75]{query-03-result.png}{Результат выполнения запроса 3}
+\screenshot[fig:query-03-result][0.75]{img/query-03-result.png}{Результат выполнения запроса 3}
 
 \begin{figure}[H]
     \centering
@@ -171,7 +169,7 @@ R_3 =
     \label{fig:query-03-histogram}
 \end{figure}
 
-\screenshot[fig:query-03-plan][0.75]{query-03-plan.png}{План выполнения запроса 3}
+\screenshot[fig:query-03-plan][0.75]{img/query-03-plan.png}{План выполнения запроса 3}
 
 Гистограмма показывает распределение числа начертаний и символов по форматам. По результатам видно, что наибольшее число записей связано с форматом \mintinline{text}{TrueType}, а остальные форматы имеют меньшие, но сопоставимые значения.
 
@@ -201,7 +199,7 @@ R_4 &= \gamma_{symbol\_count;\ \operatorname{count}(T.id) \rightarrow typeface\_
     \label{fig:query-04-histogram}
 \end{figure}
 
-\screenshot[fig:query-04-plan][0.75]{query-04-plan.png}{План выполнения запроса 4}
+\screenshot[fig:query-04-plan][0.75]{img/query-04-plan.png}{План выполнения запроса 4}
 
 Результат запроса показывает, сколько начертаний имеют одинаковое количество символов. Сначала для каждого начертания вычисляется число связанных символов, после чего выполняется повторная группировка по этому числу.
 
@@ -225,8 +223,8 @@ R_5 &= \sigma_{\substack{category\_count=\max(Q.category\_count)\\
 \vspace{-10pt}
 \inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_05.sql}
 
-\screenshot[fig:query-05-result][0.75]{query-05-result.png}{Результат выполнения запроса 5}
-\screenshot[fig:query-05-plan][0.75]{query-05-plan.png}{План выполнения запроса 5}
+\screenshot[fig:query-05-result][0.75]{img/query-05-result.png}{Результат выполнения запроса 5}
+\screenshot[fig:query-05-plan][0.75]{img/query-05-plan.png}{План выполнения запроса 5}
 
 В результате выводятся категории с минимальным и максимальным числом гарнитур. Для каждой категории сначала вычисляется количество связанных записей таблицы \mintinline{text}{Font_family}, после чего выбираются строки, попавшие в минимальную или максимальную группу по столбцу \mintinline{text}{category_count}.
 
@@ -247,9 +245,9 @@ R_6 =
 \vspace{-10pt}
 \inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_06.sql}
 
-\screenshot[fig:query-06-result][0.6]{query-06-result.png}{Результат выполнения запроса 6}
+\screenshot[fig:query-06-result][0.6]{img/query-06-result.png}{Результат выполнения запроса 6}
 
-\screenshot[fig:query-06-plan][0.75]{query-06-plan.png}{План выполнения запроса 6}
+\screenshot[fig:query-06-plan][0.75]{img/query-06-plan.png}{План выполнения запроса 6}
 
 Пустой результат связан с особенностью генерации тестовых данных: словарь насыщенностей заполняется полностью, всеми допустимыми значениями. Поэтому в базе данных нет языка, для которого отсутствуют начертания с заданной насыщенностью. Проверка выполняется через условие \mintinline{sql}{NOT EXISTS}: язык попадает в результат только если соответствующая связанная запись отсутствует.
 
@@ -273,9 +271,9 @@ R_7 &= \sigma_{typeface\_count>B}(Q).
 \vspace{-10pt}
 \inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_07.sql}
 
-\screenshot[fig:query-07-result][0.6]{query-07-result.png}{Результат выполнения запроса 7}
+\screenshot[fig:query-07-result][0.6]{img/query-07-result.png}{Результат выполнения запроса 7}
 
-\screenshot[fig:query-07-plan][0.95]{query-07-plan.png}{План выполнения запроса 7}
+\screenshot[fig:query-07-plan][0.95]{img/query-07-plan.png}{План выполнения запроса 7}
 
 В качестве базового формата в запросе выбран \mintinline{text}{WOFF2}. Результат показывает форматы, в которых начертаний больше, чем в \mintinline{text}{WOFF2}: \mintinline{text}{TrueType}, \mintinline{text}{OpenType} и \mintinline{text}{WOFF}. Запрос сначала вычисляет количество начертаний для каждого формата, затем сравнивает эти значения с количеством начертаний у формата $A$.
 
@@ -305,7 +303,7 @@ R_8 &= \gamma_{C.id,C.name,L.id,L.name;\ \operatorname{count}(S.id)}(Q).
     \label{fig:query-08-histogram}
 \end{figure}
 
-\screenshot[fig:query-08-plan][0.75]{query-08-plan.png}{План выполнения запроса 8}
+\screenshot[fig:query-08-plan][0.75]{img/query-08-plan.png}{План выполнения запроса 8}
 
 Гистограмма отражает число символов для пар «категория --- язык» по первым десяти языкам. Использование декартова произведения категорий и выбранных языков позволяет вывести все пары, а внешние соединения сохраняют строки даже при отсутствии связанных символов.
 
@@ -331,8 +329,8 @@ R_9 =
 \vspace{-10pt}
 \inputminted[linenos, numbersep=10pt, firstnumber=1, fontsize=\small]{sql}{../src/queries/query_09.sql}
 
-\screenshot[fig:query-09-result][0.75]{query-09-result.png}{Результат выполнения запроса 9}
+\screenshot[fig:query-09-result][0.75]{img/query-09-result.png}{Результат выполнения запроса 9}
 
-\screenshot[fig:query-09-plan][0.95]{query-09-plan.png}{План выполнения запроса 9}
+\screenshot[fig:query-09-plan][0.95]{img/query-09-plan.png}{План выполнения запроса 9}
 
 Запрос изменяет формат выбранного начертания в рамках транзакции и возвращает сведения о найденной записи: идентификатор начертания, его название, гарнитуру, старый и новый формат, а также статус операции. После выполнения оператор \mintinline{sql}{COMMIT} фиксирует изменение в базе данных.

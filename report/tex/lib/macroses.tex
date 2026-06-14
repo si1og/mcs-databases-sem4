@@ -1,7 +1,7 @@
 \NewDocumentCommand{\screenshot}{O{} O{0.9} m m}{
     \begin{figure}[H]
         \centering
-        \includegraphics[width=#2\textwidth]{img/#3}
+        \includegraphics[width=#2\textwidth]{#3}
         \caption{#4}
         \def\screenshotLabel{#1}
         \ifx\screenshotLabel\empty

@@ -414,6 +414,12 @@
 \fullPageFigure[fig:db-schema-ru]{db-schema.pdf}{Схема базы данных на русском языке}
 \fullPageFigure[fig:db-schema-eng]{db-schema-eng.pdf}{Схема базы данных на английском языке}
 
+\subsection{Схема заполнения уровней прогруммируемой базы данных}
+
+Схема заполнения уровней программируемой базы данных (рисунки~\ref{fig:db-schema-small-ru} и~\ref{fig:db-schema-small-eng}) приведена на рисунке \ref{fig:db-level-schema}. На первом уровке схемы все таблицы независимы и являются словарями.
+
+\screenshot[fig:db-level-schema][1]{tex/graphics/level-schema.pdf}{Иерархия заполнения уровней программируемой базы данных}
+
 \subsection{Создание таблиц базы данных и генерация записей}
 
 Для создания таблиц базы данных был написан SQL-скрипт для СУБД PostgreSQL (\hyperref[app:init-sql]{приложение А}). В проекте используется база данных \mintinline{text}{typography}, запущенная в контейнере Docker. Контейнер базы данных создаётся на основе образа PostgreSQL и доступен на локальном порту \mintinline{text}{5432}.
