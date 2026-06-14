@@ -17,10 +17,10 @@
 
 \node[entity] (garn) [below=3em of kat] {Гарнитура};
 \node[entity] (lic) [right=2em of garn] {Лицензия};
-\node[entity] (podder) [right=2em of lic] {Символ};
+\node[entity] (podder) [right=4em of lic] {Символ};
 \node[entity] (rab) [right=2em of podder] {Рабочая станция};
 
-\node[entity] (nach) [below=3em of garn] {Начертание};
+\node[entity] (nach) [below=3em of lic, xshift=2em] {Начертание};
 
 \node[entity] (isp) [below=3em of nach] {Установка};
 
@@ -32,13 +32,13 @@
 \draw[link] (izd) -- node[left, near start] {1} node[left, near end] {$\infty$} (garn);
 
 % Издательство — Лицензия
-\draw[link] (izd) -- node[above, near start] {1} node[left, near end] {$\infty$} (lic);
+\draw[link] (izd) -- node[above, near start, xshift=-0.7em, yshift=-0.5em] {1} node[left, near end] {$\infty$} (lic);
 
 % Гарнитура - Лицензия
 \draw[link] (garn) -- node[above, near start] {1} node[above, near end] {$\infty$} (lic);
 
 % Формат — Начертание
-\draw[link] (fmt) to[out=-130, in=5, looseness=1.5] node[above, near start] {1} node[above, near end] {$\infty$} (nach);
+\draw[link] (fmt) -- node[above, near start, xshift=-0.3em] {1} node[above, near end, xshift=-0.3em] {$\infty$} (nach);
 
 % ОС — Рабочая станция
 \draw[link] (os) -- node[left, near start] {1} node[left, near end] {$\infty$} (rab);
@@ -50,10 +50,10 @@
 \draw[link] (nach) -- node[left, near start] {1} node[left, near end] {$\infty$} (isp);
 
 % Рабочая станция — Использование
-\draw[link] (rab) to[out=-120, in=5] node[left, near start] {1} node[above, near end] {$\infty$} (isp);
+\draw[link] (rab) -- node[left, near start] {1} node[above, near end] {$\infty$} (isp);
 
 % Начертание 1 — ∞ Поддержка языка
-\draw[link] (nach) to[out=-10, in=-130, looseness=1] node[left, near start] {1} node[left, near end] {$\infty$} (podder);
+\draw[link] (nach) -- node[left, near start] {1} node[left, near end] {$\infty$} (podder);
 
 % Поддержка языка ∞ — 1 Язык
 \draw[link] (podder) -- node[right, near start] {$\infty$} node[right, near end] {1} (yaz);
