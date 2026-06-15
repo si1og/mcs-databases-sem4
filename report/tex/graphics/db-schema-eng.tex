@@ -61,7 +61,7 @@
 \def\xEastShift{12.6em}
 \def\dxWestShift{-3.4em}
 \def\dxEastShift{7.7em}
-\def\oneRowTablesLinkMargin{7.9em}
+\def\oneRowTablesLinkMargin{7em}
 \def\tableHgap{27em}
 
 % ==================== MAIN TABLES ====================
@@ -206,7 +206,7 @@
        & Name \\
 }
 
-\dbdict{d_st}{-16em,-60em}{
+\dbdict{d_st}{-16em,-60.45em}{
     \SetCell[c=2]{c} Script\_type & \\
     PK & \tm{d_st_pk}{id\_Script\_type} \\
        & Name \\
@@ -226,25 +226,25 @@
 }
 
 % Right side
-\dbdict{d_ext}{72em,-20em}{
+\dbdict{d_ext}{72em,-21.24em}{
     \SetCell[c=2]{c} Extension & \\
     PK & \tm{d_ext_pk}{id\_Extension} \\
        & Name \\
 }
 
-\dbdict{d_proc}{82em,-30em}{
+\dbdict{d_proc}{82em,-34em}{
     \SetCell[c=2]{c} Processor & \\
     PK & \tm{d_proc_pk}{id\_Processor} \\
        & Name \\
 }
 
-\dbdict{d_stor}{82em,-40em}{
+\dbdict{d_stor}{82em,-42.45em}{
     \SetCell[c=2]{c} Storage\_type & \\
     PK & \tm{d_stor_pk}{id\_Storage\_type} \\
        & Name \\
 }
 
-\dbdict{d_bit}{45em,-54em}{
+\dbdict{d_bit}{45em,-58.85em}{
     \SetCell[c=2]{c} Bitness & \\
     PK & \tm{d_bit_pk}{id\_Bitness} \\
        & Value \\
@@ -266,7 +266,7 @@
 
 % Font_family.id_Font_family -> Typeface.id_Font_family
 \draw[lnk] ([xshift=\xEastShift]ff_pk.west) -- ++(\hgap,0) node[crd, below] {1}
-    |- ++(0, 5em) |- ++(28.7em, 0) |- ++(0, -28em) |- ++(-24em, 0)
+    |- ++(0, 5em) |- ++(28.7em, 0) |- ++(0, -28em) |- ++(-23.7em, 0)
     |- node[crd, pos=0.75, above] {$\infty$} ([xshift=\xEastShift]tf_fk_ff.west);
 
 % Publisher.id_Publisher -> License.id_Publisher
@@ -286,7 +286,7 @@
 
 % Typeface.id_Typeface -> Symbol.id_Typeface
 \draw[lnk] ([xshift=\xWestShift, yshift=.4em]tf_pk.west) -- ++(-\hgap*2,0) node[crd, above] {1}
-    |- ++(0, -13.2em) |- ++(-6em, 0)
+    |- ++(0, -13.2em) |- ++(-5.6em, 0)
     |- node[crd, pos=0.75, above] {$\infty$} ([xshift=\xWestShift]alph_fk_tf.west);
 
 % Typeface.id_Typeface -> Installation.id_Typeface
@@ -362,39 +362,39 @@
     |- ([xshift={\hgap + \dxEastShift}]d_st_pk.west)
     -- node[crd, above] {1} ([xshift=\dxEastShift]d_st_pk.west);
 
-% ==================== NORMALIZATION LEVELS ====================
+% ==================== LEVELS ====================
 
 % Level 1
-\node[ann, above=0.3em of cat] {1; --; --};
-\node[ann, above=0.3em of fmt] {1; --; --};
-\node[ann, above=0.3em of os] {1; --; --};
+\node[ann, above=0.3em of cat] {1};
+\node[ann, above=0.3em of fmt] {1};
+\node[ann, above=0.3em of os] {1};
 
 % Level 2
-\node[ann, above=0.3em of pub] {2; --; --};
-\node[ann, above=0.3em of lang] {2; --; --};
-\node[ann, above=0.3em of ws] {2; --; --};
+\node[ann, above=0.3em of pub] {2};
+\node[ann, above=0.3em of lang] {2};
+\node[ann, above=0.3em of ws] {2};
 
 % Level 3
-\node[ann, above=0.3em of ff] {3; --; --};
+\node[ann, above=0.3em of ff] {3};
 
 % Level 4
-\node[ann, above=0.3em of tf] {4; --; --};
-\node[ann, above=0.3em of lic] {4; --; --};
+\node[ann, above=0.3em of tf] {4};
+\node[ann, above=0.3em of lic] {4};
 
 % Level 5
-\node[ann, above=0.3em of alph] {5; --; --};
-\node[ann, above=0.3em of inst] {5; --; --};
+\node[ann, above=0.3em of alph] {5};
+\node[ann, above=0.3em of inst] {5};
 
-\node[ann, above=0.3em of d_country] {1; --; --};
-\node[ann, above=0.3em of d_lictype] {1; --; --};
-\node[ann, above=0.3em of d_wd] {1; --; --};
-\node[ann, above=0.3em of d_st] {1; --; --};
-\node[ann, above=0.3em of d_weight] {1; --; --};
-\node[ann, above=0.3em of d_slope] {1; --; --};
-\node[ann, above=0.3em of d_ext] {1; --; --};
-\node[ann, above=0.3em of d_proc] {1; --; --};
-\node[ann, above=0.3em of d_stor] {1; --; --};
-\node[ann, above=0.3em of d_bit] {1; --; --};
+\node[ann, above=0.3em of d_country] {1};
+\node[ann, above=0.3em of d_lictype] {1};
+\node[ann, above=0.3em of d_wd] {1};
+\node[ann, above=0.3em of d_st] {1};
+\node[ann, above=0.3em of d_weight] {1};
+\node[ann, above=0.3em of d_slope] {1};
+\node[ann, above=0.3em of d_ext] {1};
+\node[ann, above=0.3em of d_proc] {1};
+\node[ann, above=0.3em of d_stor] {1};
+\node[ann, above=0.3em of d_bit] {1};
 
 \end{tikzpicture}
 }

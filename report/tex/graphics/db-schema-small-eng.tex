@@ -1,5 +1,5 @@
 \documentclass[a3paper, landscape]{article}
-\usepackage[left=0.5cm, right=0.5cm, top=0.5cm, bottom=0.5cm]{geometry}
+\usepackage[left=0cm, right=0cm, top=0cm, bottom=0cm]{geometry}
 \usepackage[T2A]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[russian]{babel}
@@ -8,7 +8,6 @@
 \usepackage{tabularray}
 \usepackage{tikz}
 \usetikzlibrary{positioning, calc, tikzmark}
-\addtocounter{figure}{5}
 
 \newcommand{\tm}[2]{\tikzmarknode{#1}{#2}}
 
@@ -53,7 +52,7 @@
 \begin{document}
 \begin{figure}[p]
 \centering
-\scalebox{1.1}{
+\scalebox{1.15}{
 \begin{tikzpicture}[remember picture]
 
 % === Shifts ===
@@ -133,13 +132,13 @@
 
 % ==================== DICTIONARIES ====================
 
-\dbdict{d_wd}{-16em,-12em}{
+\dbdict{d_wd}{-18em,-12em}{
     \SetCell[c=2]{c} Writing\_direction & \\
     PK & \tm{d_wd_pk}{id\_Writing\_dir.} \\
        & Name \\
 }
 
-\dbdict{d_st}{-16em,-20em}{
+\dbdict{d_st}{-18em,-20em}{
     \SetCell[c=2]{c} Script\_type & \\
     PK & \tm{d_st_pk}{id\_Script\_type} \\
        & Name \\
@@ -157,7 +156,7 @@
        & Name \\
 }
 
-\dbdict{d_ext}{72em,-20em}{
+\dbdict{d_ext}{72em,-21.24em}{
     \SetCell[c=2]{c} Extension & \\
     PK & \tm{d_ext_pk}{id\_Extension} \\
        & Name \\
@@ -167,8 +166,8 @@
 
 % Font_family.id_Category -> Category.id_Category
 \draw[lnk] ([xshift=\xEastShift]ff_fk_cat.west)
-    -- ++(\hgap,0) node[crd, above] {$\infty$}
-    node[ann, below] {15--20}
+    -- ++(\hgap,0) node[crd, below] {$\infty$}
+    node[ann, below, yshift=-0.5em] {15--20}
     |- ++(\oneRowTablesLinkMargin,0)
     |- ([xshift={-\hgap + \xWestShift}]cat_pk.west)
     -- node[crd, above] {1} ([xshift=\xWestShift]cat_pk.west);
@@ -178,28 +177,32 @@
     -- ++(-2.2em,0) node[crd, above] {1}
     |- ++(-42em,6em)
     |- ([xshift={-\hgap + \xWestShift}]tf_fk_ff.west)
-    -- node[crd, above] {$\infty$}
-    node[ann, below] {18--22}
+    -- node[crd, below, xshift=-1em] {$\infty$}
+    node[ann, below, xshift=-1em, yshift=-0.5em] {18--22}
     ([xshift=\xWestShift]tf_fk_ff.west);
 
 % Typeface.id_Format -> Format.id_Format
 \draw[lnk] ([xshift=\xEastShift]tf_fk_fmt.west)
     -- ++(2.4em,0) node[crd, above] {$\infty$}
-    |- ++(5em,0)
+    |- ++(4.1em,0)
     |- ([xshift={-\hgap + \xWestShift}]fmt_pk.west)
     -- node[crd, above] {1} ([xshift=\xWestShift]fmt_pk.west);
 
 % Symbol.id_Typeface -> Typeface.id_Typeface
 \draw[lnk] ([xshift=\xEastShift]alph_fk_tf.west)
-    -- ++(\hgap,0) node[crd, above] {$\infty$}
-    node[ann, below] {2--5 languages per typeface}
+    -- ++(\hgap,0)
+    -- ++(0, -3.35em)
+    node[crd, above] {$\infty$}
+    node[ann, below, fill=white] {2--5 languages per typeface}
     |- ([xshift={-\hgap + \xWestShift}]tf_pk.west)
     -- node[crd, above] {1} ([xshift=\xWestShift]tf_pk.west);
 
 % Symbol.id_Language -> Language.id_Language
 \draw[lnk] ([xshift=\xWestShift]alph_fk_lang.west)
-    -- ++(-\hgap,0) node[crd, above] {$\infty$}
-    node[ann, below] {33--45 symbols per pair}
+    -- ++(-\hgap,0)
+    -- ++(0, -2em)
+    node[crd, above] {$\infty$}
+    node[ann, below, fill=white] {33--45 symbols per pair}
     |- ([xshift=\xWestShift]lang_pk.west)
     -- node[crd, above] {1} ([xshift=\xWestShift]lang_pk.west);
 
@@ -232,6 +235,7 @@
 % Language.id_Script_type -> Script_type.id_Script_type
 \draw[lnk] ([xshift=\xWestShift]lang_fk_st.west)
     -- ++(-\hgap,0) node[crd, above] {$\infty$}
+    -- ++(-2em, 0)
     |- ([xshift={\hgap + \dxEastShift}]d_st_pk.west)
     -- node[crd, above] {1} ([xshift=\dxEastShift]d_st_pk.west);
 
