@@ -1,17 +1,6 @@
-\documentclass[a5paper, landscape]{article}
-\usepackage[left=0cm, right=0cm, top=0cm, bottom=0cm]{geometry}
-\usepackage[T2A]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage[russian]{babel}
-\thispagestyle{empty}
-
-\usepackage{tabularray}
-\usepackage{tikz}
-\usetikzlibrary{positioning, calc, tikzmark}
-
-\begin{document}
-\begin{figure}[p]
+\begin{figure}[H]
 \centering
+\scalebox{0.65}{
 \begin{tikzpicture}[
     node distance=4em and 8em,
     every node/.style={},
@@ -51,5 +40,7 @@
 
 \draw[link] (nach) --  (sym);
 \end{tikzpicture}
+}
+\caption{Иерархия заполнения уровней программируемой базы данных}
+\label{fig:db-level-schema}
 \end{figure}
-\end{document}
