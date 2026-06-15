@@ -286,7 +286,7 @@ R_8 &= \gamma_{C.id,C.name,L.id,L.name;\ \operatorname{count}(S.id)}(Q).
 \end{aligned}
 \]
 
-Текст запроса~8 приведён в листинге~\ref{lst:query-08}, гистограмма по полученным данным показана на рисунке~\ref{fig:query-08-histogram}, схема плана выполнения --- на рисунке~\ref{fig:query-08-plan}.
+Текст запроса~8 приведён в листинге~\ref{lst:query-08}, гистограммы по полученным данным показаны на рисунках~\ref{fig:query-08-histogram} и~\ref{fig:query-08-histogram-3d}, схема плана выполнения --- на рисунке~\ref{fig:query-08-plan}.
 
 \captionof{listing}{Запрос 8}
 \label{lst:query-08}
@@ -302,11 +302,18 @@ R_8 &= \gamma_{C.id,C.name,L.id,L.name;\ \operatorname{count}(S.id)}(Q).
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{histograms/query-08-histogram.png}
-    \caption{Гистограмма по результатам запроса 8}
+    \caption{Двумерная гистограмма по результатам запроса 8}
     \label{fig:query-08-histogram}
 \end{figure}
 
-Итоговые значения показаны на гистограмме.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{histograms/query-08-histogram-3d.png}
+    \caption{Трёхмерная гистограмма по результатам запроса 8}
+    \label{fig:query-08-histogram-3d}
+\end{figure}
+
+Итоговые значения показаны на двумерной и трёхмерной гистограммах.
 
 \subsubsection{Запрос 9}
 
