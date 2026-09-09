@@ -371,26 +371,34 @@ class Seeder {
     let placeholders: string[] = [];
 
     for (const fontFamilyId of this.fontFamilyIds) {
-      const familyName = this.makeTypefaceFamilyPrefix(fontFamilyId);
+      const typefaceName = this.makeTypefaceName(fontFamilyId);
       const typefacesPerFamily = this.fontFamilyTypefaceCounts.get(fontFamilyId);
 
       if (typefacesPerFamily === undefined) {
         throw new Error(`Missing typeface count for font family ${fontFamilyId}`);
       }
 
+      const supportedWeights = faker.helpers
+        .shuffle([...weights])
+        .slice(0, faker.number.int({ min: 2, max: weights.length }));
+      const supportedSlopes = faker.helpers
+        .shuffle([...slopes])
+        .slice(0, faker.number.int({ min: 1, max: slopes.length }));
+      const supportedFormatIds = faker.helpers
+        .shuffle([...this.formatIds])
+        .slice(
+          0,
+          faker.number.int({ min: 1, max: this.formatIds.length }),
+        );
+
       for (let i = 0; i < typefacesPerFamily; i++) {
-        const weight = weights[i % weights.length];
-        const slope = slopes[i % slopes.length];
+        const weight = supportedWeights[i % supportedWeights.length];
+        const slope = supportedSlopes[i % supportedSlopes.length];
 
         const weightId = this.getRequiredId(this.weightIds, weight, "Weight");
         const slopeId = this.getRequiredId(this.slopeIds, slope, "Slope");
 
-        const formatId = this.formatIds[i % this.formatIds.length];
-
-        const typefaceName =
-          slope === "Upright"
-            ? `${familyName} ${weight}`
-            : `${familyName} ${weight} ${slope}`;
+        const formatId = supportedFormatIds[i % supportedFormatIds.length];
 
         const index = values.length;
 
@@ -605,8 +613,8 @@ class Seeder {
     return `${generated} ${index + 1}`.slice(0, 100);
   }
 
-  private makeTypefaceFamilyPrefix(fontFamilyId: number): string {
-    return `Family ${fontFamilyId}`;
+  private makeTypefaceName(fontFamilyId: number): string {
+    return `Typeface ${fontFamilyId}`;
   }
 
   private makeSymbol(languageIndex: number, symbolOffset: number) {
